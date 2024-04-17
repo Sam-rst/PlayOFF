@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil Utilisateur{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center mb-4">Profil Utilisateur</h2>
+                    <h3 class="text-center">Papaiou</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <strong>Nom:</strong> Alzate<br>
+                        <strong>Prénom:</strong> Jacques<br>
+                        <strong>Genre:</strong> Hélicoptère de combat page 2032<br>
+                        <strong>Adresse E-mail:</strong> jacques.alzate<br>
+                    </div>
+
+                    <!-- Onglets pour les statistiques et l'historique des tournois -->
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="victoires-tab" data-toggle="tab" href="#victoires" role="tab" aria-controls="victoires" aria-selected="true">Statistiques de Victoires</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="historique-tab" data-toggle="tab" href="#historique" role="tab" aria-controls="historique" aria-selected="false">Historique des Tournois</a>
+                        </li>
+                    </ul>
+
+                    <!-- Contenu des onglets -->
+                    <div class="tab-content mt-3" id="myTabContent">
+                        <!-- Onglet Statistiques de Victoires -->
+                        <div class="tab-pane fade show active" id="victoires" role="tabpanel" aria-labelledby="victoires-tab">
+                            <h4>Statistiques de Victoires en Match</h4>
+                            <p>Nombre de victoires en match: 8</p>
+                            <p>Ratio de victoires en match: 3/5</p>
+                        </div>
+
+                        <!-- Onglet Historique des Tournois -->
+                        <div class="tab-pane fade" id="historique" role="tabpanel" aria-labelledby="historique-tab">
+                            <h4>Historique des Tournois</h4>
+                            <ul>
+                                <li>Tournoi 1 - 2023-01-15</li>
+                                <li>Tournoi 2 - 2023-03-20</li>
+                                <li>Tournoi 3 - 2023-05-10</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Inclusion de jQuery et Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Script JavaScript pour activer les onglets Bootstrap -->
+<script>
+    $(document).ready(function() {
+        $('#myTab a').click(function(e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+    });
+</script>
+{% endblock %}
