@@ -8,3 +8,4 @@ import './bootstrap';
 import { Tooltip, Toast, Popover } from 'bootstrap';
 import './styles/app.scss';
 import './styles/custom.scss';
+import './styles/styles.css';
