@@ -64,11 +64,18 @@ class User
     #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'enrolled_players')]
     private Collection $teams;
 
+    /**
+     * @var Collection<int, Meeting>
+     */
+    #[ORM\ManyToMany(targetEntity: Meeting::class, inversedBy: 'users')]
+    private Collection $matchs_history;
+
     public function __construct()
     {
         $this->tournaments_history = new ArrayCollection();
         $this->tournaments = new ArrayCollection();
         $this->teams = new ArrayCollection();
+        $this->matchs_history = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -273,6 +280,30 @@ class User
         if ($this->teams->removeElement($team)) {
             $team->removeEnrolledPlayer($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Meeting>
+     */
+    public function getMatchsHistory(): Collection
+    {
+        return $this->matchs_history;
+    }
+
+    public function addMatchsHistory(Meeting $matchsHistory): static
+    {
+        if (!$this->matchs_history->contains($matchsHistory)) {
+            $this->matchs_history->add($matchsHistory);
+        }
+
+        return $this;
+    }
+
+    public function removeMatchsHistory(Meeting $matchsHistory): static
+    {
+        $this->matchs_history->removeElement($matchsHistory);
 
         return $this;
     }

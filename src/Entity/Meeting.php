@@ -49,10 +49,17 @@ class Meeting
     #[ORM\ManyToOne(inversedBy: 'meetings')]
     private ?Tournament $tournament_id = null;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'matchs_history')]
+    private Collection $users;
+
     public function __construct()
     {
         $this->ranking = new ArrayCollection();
         $this->enrolled_teams = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -188,6 +195,33 @@ class Meeting
     public function setTournamentId(?Tournament $tournament_id): static
     {
         $this->tournament_id = $tournament_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addMatchsHistory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeMatchsHistory($this);
+        }
 
         return $this;
     }
