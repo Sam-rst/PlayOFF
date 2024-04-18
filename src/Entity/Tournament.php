@@ -55,9 +55,16 @@ class Tournament
     #[ORM\ManyToOne(inversedBy: 'tournaments')]
     private ?User $organisator_id = null;
 
+    /**
+     * @var Collection<int, Meeting>
+     */
+    #[ORM\OneToMany(targetEntity: Meeting::class, mappedBy: 'tournament_id')]
+    private Collection $meetings;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->meetings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -220,6 +227,36 @@ class Tournament
     public function setOrganisatorId(?User $organisator_id): static
     {
         $this->organisator_id = $organisator_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Meeting>
+     */
+    public function getMeetings(): Collection
+    {
+        return $this->meetings;
+    }
+
+    public function addMeeting(Meeting $meeting): static
+    {
+        if (!$this->meetings->contains($meeting)) {
+            $this->meetings->add($meeting);
+            $meeting->setTournamentId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMeeting(Meeting $meeting): static
+    {
+        if ($this->meetings->removeElement($meeting)) {
+            // set the owning side to null (unless already changed)
+            if ($meeting->getTournamentId() === $this) {
+                $meeting->setTournamentId(null);
+            }
+        }
 
         return $this;
     }
