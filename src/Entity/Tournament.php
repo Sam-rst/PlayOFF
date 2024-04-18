@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TournamentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -43,6 +45,20 @@ class Tournament
 
     #[ORM\ManyToOne(inversedBy: 'tournaments')]
     private ?Sport $sport_id = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'tournaments_history')]
+    private Collection $users;
+
+    #[ORM\ManyToOne(inversedBy: 'tournaments')]
+    private ?User $organisator_id = null;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -165,6 +181,45 @@ class Tournament
     public function setSportId(?Sport $sport_id): static
     {
         $this->sport_id = $sport_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addTournamentsHistory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeTournamentsHistory($this);
+        }
+
+        return $this;
+    }
+
+    public function getOrganisatorId(): ?User
+    {
+        return $this->organisator_id;
+    }
+
+    public function setOrganisatorId(?User $organisator_id): static
+    {
+        $this->organisator_id = $organisator_id;
 
         return $this;
     }
