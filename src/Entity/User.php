@@ -58,10 +58,17 @@ class User
     #[ORM\OneToMany(targetEntity: Tournament::class, mappedBy: 'organisator_id')]
     private Collection $tournaments;
 
+    /**
+     * @var Collection<int, Team>
+     */
+    #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'enrolled_players')]
+    private Collection $teams;
+
     public function __construct()
     {
         $this->tournaments_history = new ArrayCollection();
         $this->tournaments = new ArrayCollection();
+        $this->teams = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -238,6 +245,33 @@ class User
             if ($tournament->getOrganisatorId() === $this) {
                 $tournament->setOrganisatorId(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getTeams(): Collection
+    {
+        return $this->teams;
+    }
+
+    public function addTeam(Team $team): static
+    {
+        if (!$this->teams->contains($team)) {
+            $this->teams->add($team);
+            $team->addEnrolledPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeam(Team $team): static
+    {
+        if ($this->teams->removeElement($team)) {
+            $team->removeEnrolledPlayer($this);
         }
 
         return $this;
