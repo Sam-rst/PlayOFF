@@ -43,10 +43,17 @@ class Team
     #[ORM\ManyToMany(targetEntity: Meeting::class, mappedBy: 'ranking')]
     private Collection $meetings;
 
+    /**
+     * @var Collection<int, Tournament>
+     */
+    #[ORM\ManyToMany(targetEntity: Tournament::class, mappedBy: 'enrolled_teams')]
+    private Collection $tournaments;
+
     public function __construct()
     {
         $this->enrolled_players = new ArrayCollection();
         $this->meetings = new ArrayCollection();
+        $this->tournaments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -160,6 +167,33 @@ class Team
     {
         if ($this->meetings->removeElement($meeting)) {
             $meeting->removeRanking($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tournament>
+     */
+    public function getTournaments(): Collection
+    {
+        return $this->tournaments;
+    }
+
+    public function addTournament(Tournament $tournament): static
+    {
+        if (!$this->tournaments->contains($tournament)) {
+            $this->tournaments->add($tournament);
+            $tournament->addEnrolledTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTournament(Tournament $tournament): static
+    {
+        if ($this->tournaments->removeElement($tournament)) {
+            $tournament->removeEnrolledTeam($this);
         }
 
         return $this;

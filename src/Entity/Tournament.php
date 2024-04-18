@@ -61,10 +61,17 @@ class Tournament
     #[ORM\OneToMany(targetEntity: Meeting::class, mappedBy: 'tournament_id')]
     private Collection $meetings;
 
+    /**
+     * @var Collection<int, Team>
+     */
+    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'tournaments')]
+    private Collection $enrolled_teams;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->meetings = new ArrayCollection();
+        $this->enrolled_teams = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -257,6 +264,30 @@ class Tournament
                 $meeting->setTournamentId(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getEnrolledTeams(): Collection
+    {
+        return $this->enrolled_teams;
+    }
+
+    public function addEnrolledTeam(Team $enrolledTeam): static
+    {
+        if (!$this->enrolled_teams->contains($enrolledTeam)) {
+            $this->enrolled_teams->add($enrolledTeam);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrolledTeam(Team $enrolledTeam): static
+    {
+        $this->enrolled_teams->removeElement($enrolledTeam);
 
         return $this;
     }
