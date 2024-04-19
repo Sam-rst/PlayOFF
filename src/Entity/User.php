@@ -179,6 +179,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getName(): ?string
+    {
+        return $this->firstname . ' ' . $this->lastname ;
+    }
+
     public function getGender(): ?int
     {
         return $this->gender;
@@ -321,5 +326,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 }
