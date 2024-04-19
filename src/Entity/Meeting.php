@@ -35,6 +35,9 @@ class Meeting
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private ?array $ranking = null;
 
+    #[ORM\ManyToOne(inversedBy: 'enrolled_meetings')]
+    private ?Tournament $tournament = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +123,18 @@ class Meeting
     public function setRanking(?array $ranking): static
     {
         $this->ranking = $ranking;
+
+        return $this;
+    }
+
+    public function getTournament(): ?Tournament
+    {
+        return $this->tournament;
+    }
+
+    public function setTournament(?Tournament $tournament): static
+    {
+        $this->tournament = $tournament;
 
         return $this;
     }

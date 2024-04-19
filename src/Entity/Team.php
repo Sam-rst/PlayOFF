@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TeamRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,6 +30,20 @@ class Team
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'teams_history')]
+    private Collection $enrolled_players;
+
+    #[ORM\ManyToOne(inversedBy: 'enrolled_teams')]
+    private ?Tournament $tournament = null;
+
+    public function __construct()
+    {
+        $this->enrolled_players = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -90,6 +106,42 @@ class Team
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getEnrolledPlayers(): Collection
+    {
+        return $this->enrolled_players;
+    }
+
+    public function addEnrolledPlayer(User $enrolledPlayer): static
+    {
+        if (!$this->enrolled_players->contains($enrolledPlayer)) {
+            $this->enrolled_players->add($enrolledPlayer);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrolledPlayer(User $enrolledPlayer): static
+    {
+        $this->enrolled_players->removeElement($enrolledPlayer);
+
+        return $this;
+    }
+
+    public function getTournament(): ?Tournament
+    {
+        return $this->tournament;
+    }
+
+    public function setTournament(?Tournament $tournament): static
+    {
+        $this->tournament = $tournament;
 
         return $this;
     }

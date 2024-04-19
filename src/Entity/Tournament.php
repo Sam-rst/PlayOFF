@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TournamentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -40,6 +42,37 @@ class Tournament
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tournaments')]
+    private ?Sport $sport = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tournaments_organised')]
+    private ?User $organisator = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'tournaments_participated')]
+    private Collection $participating_players;
+
+    /**
+     * @var Collection<int, Team>
+     */
+    #[ORM\OneToMany(targetEntity: Team::class, mappedBy: 'tournament')]
+    private Collection $enrolled_teams;
+
+    /**
+     * @var Collection<int, Meeting>
+     */
+    #[ORM\OneToMany(targetEntity: Meeting::class, mappedBy: 'tournament')]
+    private Collection $enrolled_meetings;
+
+    public function __construct()
+    {
+        $this->participating_players = new ArrayCollection();
+        $this->enrolled_teams = new ArrayCollection();
+        $this->enrolled_meetings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -150,6 +183,114 @@ class Tournament
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getSport(): ?Sport
+    {
+        return $this->sport;
+    }
+
+    public function setSport(?Sport $sport): static
+    {
+        $this->sport = $sport;
+
+        return $this;
+    }
+
+    public function getOrganisator(): ?User
+    {
+        return $this->organisator;
+    }
+
+    public function setOrganisator(?User $organisator): static
+    {
+        $this->organisator = $organisator;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getParticipatingPlayers(): Collection
+    {
+        return $this->participating_players;
+    }
+
+    public function addParticipatingPlayer(User $participatingPlayer): static
+    {
+        if (!$this->participating_players->contains($participatingPlayer)) {
+            $this->participating_players->add($participatingPlayer);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipatingPlayer(User $participatingPlayer): static
+    {
+        $this->participating_players->removeElement($participatingPlayer);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getEnrolledTeams(): Collection
+    {
+        return $this->enrolled_teams;
+    }
+
+    public function addEnrolledTeam(Team $enrolledTeam): static
+    {
+        if (!$this->enrolled_teams->contains($enrolledTeam)) {
+            $this->enrolled_teams->add($enrolledTeam);
+            $enrolledTeam->setTournament($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrolledTeam(Team $enrolledTeam): static
+    {
+        if ($this->enrolled_teams->removeElement($enrolledTeam)) {
+            // set the owning side to null (unless already changed)
+            if ($enrolledTeam->getTournament() === $this) {
+                $enrolledTeam->setTournament(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Meeting>
+     */
+    public function getEnrolledMeetings(): Collection
+    {
+        return $this->enrolled_meetings;
+    }
+
+    public function addEnrolledMeeting(Meeting $enrolledMeeting): static
+    {
+        if (!$this->enrolled_meetings->contains($enrolledMeeting)) {
+            $this->enrolled_meetings->add($enrolledMeeting);
+            $enrolledMeeting->setTournament($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrolledMeeting(Meeting $enrolledMeeting): static
+    {
+        if ($this->enrolled_meetings->removeElement($enrolledMeeting)) {
+            // set the owning side to null (unless already changed)
+            if ($enrolledMeeting->getTournament() === $this) {
+                $enrolledMeeting->setTournament(null);
+            }
+        }
 
         return $this;
     }
