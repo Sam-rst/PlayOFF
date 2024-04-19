@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Sport;
-use App\Entity\Team;
 use App\Entity\Tournament;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -31,21 +30,16 @@ class TournamentType extends AbstractType
             ->add('created_at', null, [
                 'widget' => 'single_text',
             ])
-            ->add('sport_id', EntityType::class, [
+            ->add('sport', EntityType::class, [
                 'class' => Sport::class,
                 'choice_label' => 'id',
             ])
-            ->add('users', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
-            ->add('organisator_id', EntityType::class, [
+            ->add('organisator', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'id',
             ])
-            ->add('enrolled_teams', EntityType::class, [
-                'class' => Team::class,
+            ->add('participating_players', EntityType::class, [
+                'class' => User::class,
                 'choice_label' => 'id',
                 'multiple' => true,
             ])
