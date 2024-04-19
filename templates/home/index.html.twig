@@ -1,20 +1,198 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Hello HomeController!
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+	<div
+		class="container-fluid">
+		<!-- Section de recherche -->
+		<div class="py-3">
+			<select class="form-select mb-3" aria-label="Choisir un sport">
+				<option selected>Choisir un sport</option>
+				<!-- Options des sports -->
+			</select>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+			<div class="input-group mb-4">
+				<input type="text" class="form-control" placeholder="Nom du tournoi" aria-label="Nom du tournoi">
+				<button class="btn btn-outline-primary" type="button" id="button-addon2">Rechercher</button>
+			</div>
+		</div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/paulc/OneDrive/Documents/GitHub/GoPlayOFF/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/Users/paulc/OneDrive/Documents/GitHub/GoPlayOFF/templates/home/index.html.twig</code></li>
-    </ul>
-</div>
+		<!-- Section des favoris -->
+		<h5 class="mb-3 text-primary">Mes Favoris</h5>
+		<div id="carouselFavoris" class="carousel slide" data-bs-ride="carousel">
+			<div
+				class="carousel-inner">
+				<!-- Début des éléments du carrousel -->
+				{% set items = [1, 2, 3, 4, 5] %}
+				<!-- Placeholder pour les données dynamiques -->
+				{% for item in items %}
+					<div class="carousel-item {{ loop.first ? 'active' : '' }}">
+						<div class="d-flex" style="justify-content: space-evenly">
+							<div class="card" style="width: auto;">
+								<img src="https://via.placeholder.com/300x200" class="card-img-top" alt="...">
+								<div class="card-body">
+									<h5 class="card-title">Tournoi
+										{{ item }}</h5>
+									<p class="card-text">Description du tournoi
+										{{ item }}.</p>
+									<a href="#" class="btn btn-primary">Détails</a>
+								</div>
+							</div>
+							<div class="card" style="width: auto;">
+								<img src="https://via.placeholder.com/300x200" class="card-img-top" alt="...">
+								<div class="card-body">
+									<h5 class="card-title">Tournoi
+										{{ item }}</h5>
+									<p class="card-text">Description du tournoi
+										{{ item }}.</p>
+									<a href="#" class="btn btn-primary">Détails</a>
+								</div>
+							</div>
+							<div class="card" style="width: auto;">
+								<img src="https://via.placeholder.com/300x200" class="card-img-top" alt="...">
+								<div class="card-body">
+									<h5 class="card-title">Tournoi
+										{{ item }}</h5>
+									<p class="card-text">Description du tournoi
+										{{ item }}.</p>
+									<a href="#" class="btn btn-primary">Détails</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+				<!-- Fin des éléments du carrousel -->
+			</div>
+			<button class="carousel-control-prev" type="button" data-bs-target="#carouselFavoris" data-bs-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Précédent</span>
+			</button>
+			<button class="carousel-control-next" type="button" data-bs-target="#carouselFavoris" data-bs-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Suivant</span>
+			</button>
+		</div>
+
+
+		<!-- Section des tournois en cours -->
+		<h5 class="mb-3 text-primary">Mes Favoris</h5>
+		<div id="carouselFavoris" class="carousel slide" data-bs-ride="carousel">
+			<div
+				class="carousel-inner">
+				<!-- Début des éléments du carrousel -->
+				{% set items = [1, 2, 3, 4, 5] %}
+				<!-- Placeholder pour les données dynamiques -->
+				{% for item in items %}
+					<div class="carousel-item {{ loop.first ? 'active' : '' }}">
+						<div class="d-flex" style="justify-content: space-evenly">
+							<div class="card" style="width: auto;">
+								<img src="https://via.placeholder.com/300x200" class="card-img-top" alt="...">
+								<div class="card-body">
+									<h5 class="card-title">Tournoi
+										{{ item }}</h5>
+									<p class="card-text">Description du tournoi
+										{{ item }}.</p>
+									<a href="#" class="btn btn-primary">Détails</a>
+								</div>
+							</div>
+							<div class="card" style="width: auto;">
+								<img src="https://via.placeholder.com/300x200" class="card-img-top" alt="...">
+								<div class="card-body">
+									<h5 class="card-title">Tournoi
+										{{ item }}</h5>
+									<p class="card-text">Description du tournoi
+										{{ item }}.</p>
+									<a href="#" class="btn btn-primary">Détails</a>
+								</div>
+							</div>
+							<div class="card" style="width: auto;">
+								<img src="https://via.placeholder.com/300x200" class="card-img-top" alt="...">
+								<div class="card-body">
+									<h5 class="card-title">Tournoi
+										{{ item }}</h5>
+									<p class="card-text">Description du tournoi
+										{{ item }}.</p>
+									<a href="#" class="btn btn-primary">Détails</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+				<!-- Fin des éléments du carrousel -->
+			</div>
+			<button class="carousel-control-prev" type="button" data-bs-target="#carouselFavoris" data-bs-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Précédent</span>
+			</button>
+			<button class="carousel-control-next" type="button" data-bs-target="#carouselFavoris" data-bs-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Suivant</span>
+			</button>
+		</div>
+
+
+		<!-- Section des tournois terminés -->
+		<h5 class="mb-3 text-primary">Mes Favoris</h5>
+		<div id="carouselFavoris" class="carousel slide" data-bs-ride="carousel">
+			<div
+				class="carousel-inner">
+				<!-- Début des éléments du carrousel -->
+				{% set items = [1, 2, 3, 4, 5] %}
+				<!-- Placeholder pour les données dynamiques -->
+				{% for item in items %}
+					<div class="carousel-item {{ loop.first ? 'active' : '' }}">
+						<div class="d-flex" style="justify-content: space-evenly">
+							<div class="card" style="width: auto;">
+								<img src="https://via.placeholder.com/300x200" class="card-img-top" alt="...">
+								<div class="card-body">
+									<h5 class="card-title">Tournoi
+										{{ item }}</h5>
+									<p class="card-text">Description du tournoi
+										{{ item }}.</p>
+									<a href="#" class="btn btn-primary">Détails</a>
+								</div>
+							</div>
+							<div class="card" style="width: auto;">
+								<img src="https://via.placeholder.com/300x200" class="card-img-top" alt="...">
+								<div class="card-body">
+									<h5 class="card-title">Tournoi
+										{{ item }}</h5>
+									<p class="card-text">Description du tournoi
+										{{ item }}.</p>
+									<a href="#" class="btn btn-primary">Détails</a>
+								</div>
+							</div>
+							<div class="card" style="width: auto;">
+								<img src="https://via.placeholder.com/300x200" class="card-img-top" alt="...">
+								<div class="card-body">
+									<h5 class="card-title">Tournoi
+										{{ item }}</h5>
+									<p class="card-text">Description du tournoi
+										{{ item }}.</p>
+									<a href="#" class="btn btn-primary">Détails</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+				<!-- Fin des éléments du carrousel -->
+			</div>
+			<button class="carousel-control-prev" type="button" data-bs-target="#carouselFavoris" data-bs-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Précédent</span>
+			</button>
+			<button class="carousel-control-next" type="button" data-bs-target="#carouselFavoris" data-bs-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Suivant</span>
+			</button>
+		</div>
+
+		<!-- Bouton pour créer un tournoi -->
+		<div class="d-grid gap-2">
+			<button class="btn btn-primary" type="button">Créer un tournoi</button>
+
+		</div>
+	</div>
 {% endblock %}
