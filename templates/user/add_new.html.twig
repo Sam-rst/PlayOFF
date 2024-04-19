@@ -1,0 +1,33 @@
+{# templates/player/add_new.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un nouveau joueur{% endblock %}
+
+{% block body %}
+    <h2>Ajouter joueur</h2>
+    <div class="player-without-account">
+        {{ form_start(form) }}
+            <div class="form-group">
+                {{ form_label(form.firstName) }}
+                {{ form_widget(form.firstName, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.lastName) }}
+                {{ form_widget(form.lastName, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.gender) }}
+                {{ form_widget(form.gender, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_widget(form.sendEmail, {'attr': {'class': 'btn btn-primary'}}) }}
+                {{ form_widget(form.createInviteLink, {'attr': {'class': 'btn btn-secondary'}}) }}
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

@@ -1,0 +1,59 @@
+<?php
+
+namespace App\Form;
+
+use App\Entity\Meeting;
+use App\Entity\Team;
+use App\Entity\Tournament;
+use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class UserType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('firstname')
+            ->add('lastname')
+            ->add('username')
+            ->add('email')
+            ->add('password')
+            ->add('gender')
+            ->add('birth_date', null, [
+                'widget' => 'single_text',
+            ])
+            ->add('roles')
+            ->add('created_at', null, [
+                'widget' => 'single_text',
+            ])
+            ->add('updated_at', null, [
+                'widget' => 'single_text',
+            ])
+            ->add('tournaments_history', EntityType::class, [
+                'class' => Tournament::class,
+                'choice_label' => 'id',
+                'multiple' => true,
+            ])
+            ->add('teams', EntityType::class, [
+                'class' => Team::class,
+                'choice_label' => 'id',
+                'multiple' => true,
+            ])
+            ->add('matchs_history', EntityType::class, [
+                'class' => Meeting::class,
+                'choice_label' => 'id',
+                'multiple' => true,
+            ])
+        ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => User::class,
+        ]);
+    }
+}

@@ -1,0 +1,20 @@
+{# templates/player/add_existing.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un joueur existant{% endblock %}
+
+{% block body %}
+    <h2>Ajouter joueur</h2>
+    <div class="player-with-account">
+        {{ form_start(form) }}
+            <div class="form-group">
+                {{ form_label(form.username) }}
+                {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_widget(form.addPlayer, {'attr': {'class': 'btn btn-primary'}}) }}
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

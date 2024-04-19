@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter Joueur{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {% include 'player/add_existing.html.twig' %}
+            </div>
+            <div class="col">
+                {% include 'player/add_new.html.twig' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
