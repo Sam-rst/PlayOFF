@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MeetingRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -37,6 +39,17 @@ class Meeting
 
     #[ORM\ManyToOne(inversedBy: 'enrolled_meetings')]
     private ?Tournament $tournament = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'meetings_history')]
+    private Collection $participating_players;
+
+    public function __construct()
+    {
+        $this->participating_players = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -135,6 +148,33 @@ class Meeting
     public function setTournament(?Tournament $tournament): static
     {
         $this->tournament = $tournament;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getParticipatingPlayers(): Collection
+    {
+        return $this->participating_players;
+    }
+
+    public function addParticipatingPlayer(User $participatingPlayer): static
+    {
+        if (!$this->participating_players->contains($participatingPlayer)) {
+            $this->participating_players->add($participatingPlayer);
+            $participatingPlayer->addMeetingsHistory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipatingPlayer(User $participatingPlayer): static
+    {
+        if ($this->participating_players->removeElement($participatingPlayer)) {
+            $participatingPlayer->removeMeetingsHistory($this);
+        }
 
         return $this;
     }

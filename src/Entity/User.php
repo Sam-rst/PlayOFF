@@ -40,9 +40,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 100)]
     private ?string $lastname = null;
 
-    #[ORM\Column]
-    private ?int $gender = null;
-
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $username = null;
 
@@ -73,11 +70,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'enrolled_players')]
     private Collection $teams_history;
 
+    /**
+     * @var Collection<int, Meeting>
+     */
+    #[ORM\ManyToMany(targetEntity: Meeting::class, inversedBy: 'participating_players')]
+    private Collection $meetings_history;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Gender $gender = null;
+
     public function __construct()
     {
         $this->tournaments_organised = new ArrayCollection();
         $this->tournaments_participated = new ArrayCollection();
         $this->teams_history = new ArrayCollection();
+        $this->meetings_history = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -179,16 +186,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getGender(): ?int
+    public function getName(): ?string
     {
-        return $this->gender;
-    }
-
-    public function setGender(int $gender): static
-    {
-        $this->gender = $gender;
-
-        return $this;
+        return $this->firstname . ' ' . $this->lastname ;
     }
 
     public function getUsername(): ?string
@@ -319,6 +319,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->teams_history->removeElement($teamsHistory)) {
             $teamsHistory->removeEnrolledPlayer($this);
         }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
+    /**
+     * @return Collection<int, Meeting>
+     */
+    public function getMeetingsHistory(): Collection
+    {
+        return $this->meetings_history;
+    }
+
+    public function addMeetingsHistory(Meeting $meetingsHistory): static
+    {
+        if (!$this->meetings_history->contains($meetingsHistory)) {
+            $this->meetings_history->add($meetingsHistory);
+        }
+
+        return $this;
+    }
+
+    public function removeMeetingsHistory(Meeting $meetingsHistory): static
+    {
+        $this->meetings_history->removeElement($meetingsHistory);
+
+        return $this;
+    }
+
+    public function getGender(): ?Gender
+    {
+        return $this->gender;
+    }
+
+    public function setGender(?Gender $gender): static
+    {
+        $this->gender = $gender;
 
         return $this;
     }
