@@ -6,6 +6,7 @@ use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -27,11 +28,11 @@ class UserCrudController extends AbstractCrudController
     {
         return [
             //Index
-            IdField::new('id'),
+            IdField::new('id')->hideOnForm(),
             TextField::new('name')->setLabel('Nom'),
             TextField::new('username')->setLabel('Pseudo'),
             EmailField::new('email'),
-            IntegerField::new('gender')->setLabel('Genre'),
+            AssociationField::new('gender')->setLabel('Genre'),
             AssociationField::new('tournaments_organised')->onlyOnIndex()->setLabel('Tournois organisés'),
             AssociationField::new('tournaments_participated')->onlyOnIndex()->setLabel('Tournois participés'),
             AssociationField::new('teams_history')->onlyOnIndex()->setLabel('Equipes'),
@@ -42,6 +43,9 @@ class UserCrudController extends AbstractCrudController
             ArrayField::new('tournaments_participated')->onlyOnDetail()->setLabel('Tournois participés'),
             ArrayField::new('teams_history')->onlyOnDetail()->setLabel('Equipes'),
             ArrayField::new('meetings_history')->onlyOnDetail()->setLabel('Matchs disputés'),
+
+            // Forms
+
         ];
     }
 }

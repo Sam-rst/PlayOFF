@@ -40,9 +40,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 100)]
     private ?string $lastname = null;
 
-    #[ORM\Column]
-    private ?int $gender = null;
-
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $username = null;
 
@@ -78,6 +75,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\ManyToMany(targetEntity: Meeting::class, inversedBy: 'participating_players')]
     private Collection $meetings_history;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Gender $gender = null;
 
     public function __construct()
     {
@@ -189,18 +189,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getName(): ?string
     {
         return $this->firstname . ' ' . $this->lastname ;
-    }
-
-    public function getGender(): ?int
-    {
-        return $this->gender;
-    }
-
-    public function setGender(int $gender): static
-    {
-        $this->gender = $gender;
-
-        return $this;
     }
 
     public function getUsername(): ?string
@@ -360,6 +348,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeMeetingsHistory(Meeting $meetingsHistory): static
     {
         $this->meetings_history->removeElement($meetingsHistory);
+
+        return $this;
+    }
+
+    public function getGender(): ?Gender
+    {
+        return $this->gender;
+    }
+
+    public function setGender(?Gender $gender): static
+    {
+        $this->gender = $gender;
 
         return $this;
     }

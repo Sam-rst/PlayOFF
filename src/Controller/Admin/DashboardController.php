@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Gender;
 use App\Entity\Meeting;
 use App\Entity\Sport;
 use App\Entity\Team;
@@ -33,8 +34,9 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToCrud('User', 'fa-solid fa-user', User::class);
         yield MenuItem::linkToCrud('Tournament', 'fa-solid fa-trophy', Tournament::class);
-        yield MenuItem::linkToCrud('Sport', 'fa-solid fa-table-tennis-paddle-ball', Sport::class);
         yield MenuItem::linkToCrud('Team', 'fa-solid fa-users', Team::class);
         yield MenuItem::linkToCrud('Meeting', 'fa-solid fa-handshake', Meeting::class);
+        yield MenuItem::linkToCrud('Sport', 'fa-solid fa-table-tennis-paddle-ball', Sport::class);
+        yield MenuItem::linkToCrud('Gender', 'fa-solid fa-venus-mars', Gender::class);
     }
 }
