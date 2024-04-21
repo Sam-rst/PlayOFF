@@ -73,11 +73,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'enrolled_players')]
     private Collection $teams_history;
 
+    /**
+     * @var Collection<int, Meeting>
+     */
+    #[ORM\ManyToMany(targetEntity: Meeting::class, inversedBy: 'participating_players')]
+    private Collection $meetings_history;
+
     public function __construct()
     {
         $this->tournaments_organised = new ArrayCollection();
         $this->tournaments_participated = new ArrayCollection();
         $this->teams_history = new ArrayCollection();
+        $this->meetings_history = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -331,5 +338,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         return $this->getName();
+    }
+
+    /**
+     * @return Collection<int, Meeting>
+     */
+    public function getMeetingsHistory(): Collection
+    {
+        return $this->meetings_history;
+    }
+
+    public function addMeetingsHistory(Meeting $meetingsHistory): static
+    {
+        if (!$this->meetings_history->contains($meetingsHistory)) {
+            $this->meetings_history->add($meetingsHistory);
+        }
+
+        return $this;
+    }
+
+    public function removeMeetingsHistory(Meeting $meetingsHistory): static
+    {
+        $this->meetings_history->removeElement($meetingsHistory);
+
+        return $this;
     }
 }

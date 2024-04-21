@@ -35,12 +35,13 @@ class UserCrudController extends AbstractCrudController
             AssociationField::new('tournaments_organised')->onlyOnIndex()->setLabel('Tournois organisés'),
             AssociationField::new('tournaments_participated')->onlyOnIndex()->setLabel('Tournois participés'),
             AssociationField::new('teams_history')->onlyOnIndex()->setLabel('Equipes'),
-            // AssociationField::new('meetings_history')->onlyOnIndex()->setLabel('Matchs disputés'),
+            AssociationField::new('meetings_history')->onlyOnIndex()->setLabel('Matchs disputés'),
             
             // Details
             ArrayField::new('tournaments_organised')->onlyOnDetail()->setLabel('Tournois organisés'),
             ArrayField::new('tournaments_participated')->onlyOnDetail()->setLabel('Tournois participés'),
             ArrayField::new('teams_history')->onlyOnDetail()->setLabel('Equipes'),
+            ArrayField::new('meetings_history')->onlyOnDetail()->setLabel('Matchs disputés'),
         ];
     }
 }
