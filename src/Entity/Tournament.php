@@ -32,9 +32,6 @@ class Tournament
     private ?\DateTimeInterface $end_time = null;
 
     #[ORM\Column]
-    private ?int $gender_rule = null;
-
-    #[ORM\Column]
     private ?int $number_players_per_team = null;
 
     #[ORM\Column(length: 100)]
@@ -66,6 +63,9 @@ class Tournament
      */
     #[ORM\OneToMany(targetEntity: Meeting::class, mappedBy: 'tournament')]
     private Collection $enrolled_meetings;
+
+    #[ORM\ManyToOne(inversedBy: 'tournaments')]
+    private ?Gender $gender_rule = null;
 
     public function __construct()
     {
@@ -135,18 +135,6 @@ class Tournament
     public function setEndTime(\DateTimeInterface $end_time): static
     {
         $this->end_time = $end_time;
-
-        return $this;
-    }
-
-    public function getGenderRule(): ?int
-    {
-        return $this->gender_rule;
-    }
-
-    public function setGenderRule(int $gender_rule): static
-    {
-        $this->gender_rule = $gender_rule;
 
         return $this;
     }
@@ -298,5 +286,17 @@ class Tournament
     public function __toString()
     {
         return $this->getName();
+    }
+
+    public function getGenderRule(): ?Gender
+    {
+        return $this->gender_rule;
+    }
+
+    public function setGenderRule(?Gender $gender_rule): static
+    {
+        $this->gender_rule = $gender_rule;
+
+        return $this;
     }
 }

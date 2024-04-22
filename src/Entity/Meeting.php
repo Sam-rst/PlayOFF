@@ -34,9 +34,6 @@ class Meeting
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private ?array $ranking = null;
-
     #[ORM\ManyToOne(inversedBy: 'enrolled_meetings')]
     private ?Tournament $tournament = null;
 
@@ -46,9 +43,23 @@ class Meeting
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'meetings_history')]
     private Collection $participating_players;
 
+    /**
+     * @var Collection<int, Team>
+     */
+    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'meetings')]
+    private Collection $enrolled_teams;
+
+    /**
+     * @var Collection<int, Team>
+     */
+    #[ORM\OneToMany(targetEntity: Team::class, mappedBy: 'rank_meeting')]
+    private Collection $ranking;
+
     public function __construct()
     {
         $this->participating_players = new ArrayCollection();
+        $this->enrolled_teams = new ArrayCollection();
+        $this->ranking = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -128,18 +139,6 @@ class Meeting
         return $this;
     }
 
-    public function getRanking(): ?array
-    {
-        return $this->ranking;
-    }
-
-    public function setRanking(?array $ranking): static
-    {
-        $this->ranking = $ranking;
-
-        return $this;
-    }
-
     public function getTournament(): ?Tournament
     {
         return $this->tournament;
@@ -177,5 +176,72 @@ class Meeting
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getEnrolledTeams(): Collection
+    {
+        return $this->enrolled_teams;
+    }
+
+    public function addEnrolledTeam(Team $enrolledTeam): static
+    {
+        if (!$this->enrolled_teams->contains($enrolledTeam)) {
+            $this->enrolled_teams->add($enrolledTeam);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrolledTeam(Team $enrolledTeam): static
+    {
+        $this->enrolled_teams->removeElement($enrolledTeam);
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getRanking(): Collection
+    {
+        return $this->ranking;
+    }
+
+    public function addRanking(Team $ranking): static
+    {
+        if (!$this->ranking->contains($ranking)) {
+            $this->ranking->add($ranking);
+            $ranking->setRankMeeting($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRanking(Team $ranking): static
+    {
+        if ($this->ranking->removeElement($ranking)) {
+            // set the owning side to null (unless already changed)
+            if ($ranking->getRankMeeting() === $this) {
+                $ranking->setRankMeeting(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getWinner()
+    {
+        if (!empty($this->getRanking())) {
+            return $this->getRanking()[0];
+        }
+        return 'Pas encore connu';
     }
 }

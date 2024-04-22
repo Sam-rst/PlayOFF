@@ -24,9 +24,16 @@ class Gender
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'gender')]
     private Collection $users;
 
+    /**
+     * @var Collection<int, Tournament>
+     */
+    #[ORM\OneToMany(targetEntity: Tournament::class, mappedBy: 'gender_rule')]
+    private Collection $tournaments;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->tournaments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -79,5 +86,35 @@ class Gender
     public function __toString()
     {
         return $this->getGender();
+    }
+
+    /**
+     * @return Collection<int, Tournament>
+     */
+    public function getTournaments(): Collection
+    {
+        return $this->tournaments;
+    }
+
+    public function addTournament(Tournament $tournament): static
+    {
+        if (!$this->tournaments->contains($tournament)) {
+            $this->tournaments->add($tournament);
+            $tournament->setGenderRule($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTournament(Tournament $tournament): static
+    {
+        if ($this->tournaments->removeElement($tournament)) {
+            // set the owning side to null (unless already changed)
+            if ($tournament->getGenderRule() === $this) {
+                $tournament->setGenderRule(null);
+            }
+        }
+
+        return $this;
     }
 }

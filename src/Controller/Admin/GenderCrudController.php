@@ -22,8 +22,8 @@ class GenderCrudController extends AbstractCrudController
         return [
             IdField::new('id')->onlyOnIndex(),
             TextField::new('gender')->setLabel('Genre'),
-            AssociationField::new('users')->setLabel('Utilisateurs')->onlyOnIndex(),
-            ArrayField::new('users')->setLabel('Utilisateurs')->onlyOnDetail(),
+            AssociationField::new('users')->setLabel('Utilisateurs'),
+            AssociationField::new('tournaments')->setLabel('Tournois'),
         ];
     }
 }

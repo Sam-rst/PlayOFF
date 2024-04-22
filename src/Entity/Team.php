@@ -40,9 +40,20 @@ class Team
     #[ORM\ManyToOne(inversedBy: 'enrolled_teams')]
     private ?Tournament $tournament = null;
 
+    /**
+     * @var Collection<int, Meeting>
+     */
+    #[ORM\ManyToMany(targetEntity: Meeting::class, mappedBy: 'enrolled_teams')]
+    private Collection $meetings;
+
+    #[ORM\ManyToOne(inversedBy: 'ranking')]
+    private ?Meeting $rank_meeting = null;
+
+
     public function __construct()
     {
         $this->enrolled_players = new ArrayCollection();
+        $this->meetings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -149,5 +160,44 @@ class Team
     public function __toString()
     {
         return $this->getName();
+    }
+
+    /**
+     * @return Collection<int, Meeting>
+     */
+    public function getMeetings(): Collection
+    {
+        return $this->meetings;
+    }
+
+    public function addMeeting(Meeting $meeting): static
+    {
+        if (!$this->meetings->contains($meeting)) {
+            $this->meetings->add($meeting);
+            $meeting->addEnrolledTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMeeting(Meeting $meeting): static
+    {
+        if ($this->meetings->removeElement($meeting)) {
+            $meeting->removeEnrolledTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function getRankMeeting(): ?Meeting
+    {
+        return $this->rank_meeting;
+    }
+
+    public function setRankMeeting(?Meeting $rank_meeting): static
+    {
+        $this->rank_meeting = $rank_meeting;
+
+        return $this;
     }
 }
