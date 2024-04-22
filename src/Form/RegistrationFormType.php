@@ -28,14 +28,6 @@ class RegistrationFormType extends AbstractType
                     'class' => 'form-floating my-3'
                 ]
             ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => "Vous devez acceptez nos conditions d'utilisation",
-                    ]),
-                ],
-            ])
             ->add('plainPassword', PasswordType::class, [
                 'label' => false,
                 'mapped' => false,
@@ -71,10 +63,6 @@ class RegistrationFormType extends AbstractType
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Veuillez confirmer votre mot de passe',
-                    ]),
-                    new EqualTo([
-                        'propertyPath' => 'plainPassword',
-                        'message' => 'Les deux mots de passes doivent correspondre',
                     ]),
                 ],
             ])
