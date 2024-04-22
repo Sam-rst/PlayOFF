@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240421193345 extends AbstractMigration
+final class Version20240422081718 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,10 +21,10 @@ final class Version20240421193345 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE gender (id INT AUTO_INCREMENT NOT NULL, gender VARCHAR(100) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE meeting (id INT AUTO_INCREMENT NOT NULL, tournament_id INT DEFAULT NULL, name VARCHAR(100) DEFAULT NULL, start_time DATETIME NOT NULL, end_time DATETIME DEFAULT NULL, score LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:array)\', win_condition VARCHAR(3) DEFAULT NULL, created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', ranking LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:array)\', INDEX IDX_F515E13933D1A3E7 (tournament_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE meeting (id INT AUTO_INCREMENT NOT NULL, tournament_id INT DEFAULT NULL, name VARCHAR(100) DEFAULT NULL, start_time DATETIME NOT NULL, end_time DATETIME DEFAULT NULL, score LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:array)\', win_condition VARCHAR(3) DEFAULT NULL, created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_F515E13933D1A3E7 (tournament_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE meeting_team (meeting_id INT NOT NULL, team_id INT NOT NULL, INDEX IDX_28115ECD67433D9C (meeting_id), INDEX IDX_28115ECD296CD8AE (team_id), PRIMARY KEY(meeting_id, team_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE sport (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(100) NOT NULL, description LONGTEXT DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE team (id INT AUTO_INCREMENT NOT NULL, tournament_id INT DEFAULT NULL, name VARCHAR(100) NOT NULL, description LONGTEXT DEFAULT NULL, division VARCHAR(100) DEFAULT NULL, rating INT DEFAULT NULL, created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_C4E0A61F33D1A3E7 (tournament_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE team (id INT AUTO_INCREMENT NOT NULL, tournament_id INT DEFAULT NULL, rank_meeting_id INT DEFAULT NULL, name VARCHAR(100) NOT NULL, description LONGTEXT DEFAULT NULL, division VARCHAR(100) DEFAULT NULL, rating INT DEFAULT NULL, created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_C4E0A61F33D1A3E7 (tournament_id), INDEX IDX_C4E0A61FAA816465 (rank_meeting_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE team_user (team_id INT NOT NULL, user_id INT NOT NULL, INDEX IDX_5C722232296CD8AE (team_id), INDEX IDX_5C722232A76ED395 (user_id), PRIMARY KEY(team_id, user_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE tournament (id INT AUTO_INCREMENT NOT NULL, sport_id INT DEFAULT NULL, organisator_id INT DEFAULT NULL, gender_rule_id INT DEFAULT NULL, name VARCHAR(100) NOT NULL, rules LONGTEXT DEFAULT NULL, is_public TINYINT(1) NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, number_players_per_team INT NOT NULL, type_tournament VARCHAR(100) NOT NULL, created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_BD5FB8D9AC78BCF8 (sport_id), INDEX IDX_BD5FB8D9FFDD4EC8 (organisator_id), INDEX IDX_BD5FB8D986A676ED (gender_rule_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE tournament_user (tournament_id INT NOT NULL, user_id INT NOT NULL, INDEX IDX_BA1E647733D1A3E7 (tournament_id), INDEX IDX_BA1E6477A76ED395 (user_id), PRIMARY KEY(tournament_id, user_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
@@ -35,6 +35,7 @@ final class Version20240421193345 extends AbstractMigration
         $this->addSql('ALTER TABLE meeting_team ADD CONSTRAINT FK_28115ECD67433D9C FOREIGN KEY (meeting_id) REFERENCES meeting (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE meeting_team ADD CONSTRAINT FK_28115ECD296CD8AE FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE team ADD CONSTRAINT FK_C4E0A61F33D1A3E7 FOREIGN KEY (tournament_id) REFERENCES tournament (id)');
+        $this->addSql('ALTER TABLE team ADD CONSTRAINT FK_C4E0A61FAA816465 FOREIGN KEY (rank_meeting_id) REFERENCES meeting (id)');
         $this->addSql('ALTER TABLE team_user ADD CONSTRAINT FK_5C722232296CD8AE FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE team_user ADD CONSTRAINT FK_5C722232A76ED395 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE tournament ADD CONSTRAINT FK_BD5FB8D9AC78BCF8 FOREIGN KEY (sport_id) REFERENCES sport (id)');
@@ -54,6 +55,7 @@ final class Version20240421193345 extends AbstractMigration
         $this->addSql('ALTER TABLE meeting_team DROP FOREIGN KEY FK_28115ECD67433D9C');
         $this->addSql('ALTER TABLE meeting_team DROP FOREIGN KEY FK_28115ECD296CD8AE');
         $this->addSql('ALTER TABLE team DROP FOREIGN KEY FK_C4E0A61F33D1A3E7');
+        $this->addSql('ALTER TABLE team DROP FOREIGN KEY FK_C4E0A61FAA816465');
         $this->addSql('ALTER TABLE team_user DROP FOREIGN KEY FK_5C722232296CD8AE');
         $this->addSql('ALTER TABLE team_user DROP FOREIGN KEY FK_5C722232A76ED395');
         $this->addSql('ALTER TABLE tournament DROP FOREIGN KEY FK_BD5FB8D9AC78BCF8');

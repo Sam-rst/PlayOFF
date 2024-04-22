@@ -46,6 +46,10 @@ class Team
     #[ORM\ManyToMany(targetEntity: Meeting::class, mappedBy: 'enrolled_teams')]
     private Collection $meetings;
 
+    #[ORM\ManyToOne(inversedBy: 'ranking')]
+    private ?Meeting $rank_meeting = null;
+
+
     public function __construct()
     {
         $this->enrolled_players = new ArrayCollection();
@@ -181,6 +185,18 @@ class Team
         if ($this->meetings->removeElement($meeting)) {
             $meeting->removeEnrolledTeam($this);
         }
+
+        return $this;
+    }
+
+    public function getRankMeeting(): ?Meeting
+    {
+        return $this->rank_meeting;
+    }
+
+    public function setRankMeeting(?Meeting $rank_meeting): static
+    {
+        $this->rank_meeting = $rank_meeting;
 
         return $this;
     }

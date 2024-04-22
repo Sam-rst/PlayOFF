@@ -45,7 +45,7 @@ class AppFixtures extends Fixture
 
         // Create 10 users
         $users = [];
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $user = new User();
             $user
                 ->setFirstname($faker->firstName())
@@ -90,7 +90,7 @@ class AppFixtures extends Fixture
         // Create Teams
         $teams = [];
         foreach ($tournaments as $tournament) {
-            for ($i = 0; $i < $faker->numberBetween(2, 6); $i++) {
+            for ($i = 0; $i <= $faker->numberBetween(2, 6); $i++) {
                 $team = new Team();
                 $team
                     ->setName($faker->colorName())
@@ -100,17 +100,15 @@ class AppFixtures extends Fixture
                     ->setTournament($tournament)
                     ->setCreatedAt(DateTimeImmutable::createFromMutable($faker->dateTime()));
 
-                $manager->persist($team);
-                $teams[] = $team;
-
-                for ($i = 0; $i <= $tournament->getNumberPlayersPerTeam(); $i++) {
+                for ($j = 0; $j < $tournament->getNumberPlayersPerTeam(); $j++) {
                     $user = $faker->randomElement($users);
                     $user
                         ->addTeamsHistory($team)
-                        ->addTournamentsParticipated($tournament)
-                        ;
+                        ->addTournamentsParticipated($tournament);
                     $manager->persist($user);
                 }
+                $manager->persist($team);
+                $teams[] = $team;
             }
         }
 
@@ -120,18 +118,34 @@ class AppFixtures extends Fixture
         $meetings = [];
         for ($i = 0; $i < 10; $i++) {
             $meeting = new Meeting();
+            $score = [];
 
-            foreach (array_rand($teams, 2) as $team) {
-                $meeting->addEnrolledTeam($teams[$team]);
+            // Links teams and players to meeting
+            $teams_ids = array_rand($teams, 2);
+            foreach ($teams_ids as $id) {
+                $meeting->addEnrolledTeam($teams[$id]);
+                $score[] = $faker->numberBetween(0, 7);
+                foreach ($teams[$id]->getEnrolledPlayers() as $player) {
+                    $meeting->addParticipatingPlayer($player);
+                }
             }
+
+            // Faire un faux classement
+            $enrolled_teams = $meeting->getEnrolledTeams()->toArray();
+            shuffle($enrolled_teams);
+            foreach($enrolled_teams as $team) {
+                $meeting->addRanking($team);
+            }
+
             $meeting
                 ->setName($faker->randomElement(['1er match de poules', '2eme match de poules', '3eme match de poules', '16e de finale', '8e de finale', 'Quart de finale', 'Demie finale', 'Finale']))
                 ->setStartTime(DateTimeImmutable::createFromMutable($faker->dateTime()))
                 ->setEndTime(DateTimeImmutable::createFromMutable($faker->dateTime()))
-                ->setScore([$faker->numberBetween(0, 7)])
-                ->setWinCondition($faker->randomElement(['KO', 'WO', 'WIN', '', '', '']))
+                ->setScore($score)
+                ->setWinCondition($faker->randomElement(['KO', 'WO', 'WIN', 'WIN', 'WIN', '']))
                 ->setTournament($faker->randomElement($tournaments))
                 ->setCreatedAt(DateTimeImmutable::createFromMutable($faker->dateTime()));
+
             $manager->persist($meeting);
             $meetings[] = $meeting;
         }

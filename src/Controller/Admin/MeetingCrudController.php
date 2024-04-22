@@ -25,9 +25,10 @@ class MeetingCrudController extends AbstractCrudController
             TextField::new('name')->setLabel('Nom'),
             DateTimeField::new('start_time')->setFormat('dd MMMM yyyy à hh:mm:ss')->setLabel('Début de la rencontre'),
             DateTimeField::new('end_time')->setFormat('dd MMMM yyyy à hh:mm:ss')->setLabel('Fin de la rencontre'),
+            TextField::new('Winner')->setLabel('Gagnant'),
             ArrayField::new('score')->setLabel('Score'),
-            TextField::new('win_condition')->setLabel('Gagné par '),
             ArrayField::new('ranking')->setLabel('Classement'),
+            TextField::new('win_condition')->setLabel('Gagné comment ?'),
             AssociationField::new('enrolled_teams')->setLabel('Equipes')->onlyOnIndex(),
             ArrayField::new('enrolled_teams')->setLabel('Equipes')->onlyOnDetail(),
         ];

@@ -22,10 +22,10 @@ class SportCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->onlyOnIndex(),
-            TextField::new('name'),
-            TextField::new('description'),
-            AssociationField::new('tournaments')->onlyOnIndex(),
-            ArrayField::new('tournaments')->onlyOnDetail(),
+            TextField::new('name')->setLabel('Nom'),
+            TextField::new('description')->setLabel('Description'),
+            AssociationField::new('tournaments')->setLabel('Tournois')->onlyOnIndex(),
+            ArrayField::new('tournaments')->setLabel('Tournois')->onlyOnDetail(),
         ];
     }
 }
