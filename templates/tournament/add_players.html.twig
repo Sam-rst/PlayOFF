@@ -28,20 +28,44 @@
 				{{ form_row(create_new_player_form.firstname) }}
 				{{ form_row(create_new_player_form.lastname) }}
 				{{ form_row(create_new_player_form.email) }}
+				{{ form_row(create_new_player_form.gender) }}
 				<button class="btn" type="submit">Ajouter</button>
 				{{ form_end(create_new_player_form, {'render_rest': false}) }}
 			</div>
 
 			<div class="input-group">
 				<h4>Joueurs ajoutés</h4>
-				<ul>
-					{% for username in app.session.get('added_players', []) %}
-						<li>{{ username }}</li>
-					{% else %}
-						<li>Aucun joueur ajouté.</li>
-					{% endfor %}
-				</ul>
 			</div>
+
+			{# Vérifier s'il y a des joueurs ajoutés en session #}
+			{% set addedPlayers = app.session.get('added_players', []) %}
+
+			{# Vérifier s'il y a un nombre défini de joueurs par équipe #}
+			{% set playersPerTeam = tournament.numberPlayersPerTeam ?? 1 %}
+
+			<p>Nombre de joueurs par équipe :{{ tournament.numberPlayersPerTeam }}</p>
+
+			{# Calculer le nombre total d'équipes nécessaires #}
+			{% set totalTeams = (addedPlayers|length / playersPerTeam)|round(0, 'ceil') %}
+
+			{# Découper les joueurs en équipes #}
+			{% for i in 0..totalTeams - 1 %}
+				<div class="input-group" style="padding-inline: 5em;">
+					<div class="col-half">
+						<h4>Équipe
+							{{ loop.index }}</h4>
+						<ul>
+							{% for username in addedPlayers|slice(i * playersPerTeam, playersPerTeam) %}
+								<li>{{ username }}</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+			{% else %}
+				<div class="input-group">
+					<p>Aucun joueur ajouté.</p>
+				</div>
+			{% endfor %}
 		</div>
 
 
@@ -52,7 +76,12 @@
 
 {# <a href="{{ path('some_route_to_create_invitation_link') }}">Créer un lien d'invitation</a> #}{% endblock %}{% block javascriptsBrut %}
 {{ parent() }}
-<script src="{{ asset('js/search_users.js') }}"></script>{% endblock %}{% block styleBrut %}
+<script src="{{ asset('js/search_users.js') }}"></script>
+<script>
+	$('form').submit(function () {
+$(this).trigger("reset");
+});
+</script>{% endblock %}{% block styleBrut %}
 <style>
 	/* 64ac15 */
 	*,

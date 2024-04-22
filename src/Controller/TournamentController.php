@@ -15,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -69,39 +70,71 @@ class TournamentController extends AbstractController
         $addExistingPlayerForm = $this->createForm(AddExistingPlayerType::class);
         $createNewPlayerForm = $this->createForm(AddNewPlayerType::class);
 
-        // Traitement de la soumission du formulaire
+        // Traitement de la soumission du formulaire pour l'ajout d'un joueur existant
         $addExistingPlayerForm->handleRequest($request);
 
         if ($addExistingPlayerForm->isSubmitted()) {
             $username = $addExistingPlayerForm->get('username')->getData();
 
             // Vérification si l'utilisateur existe dans la base de données
-            $user = $entityManager->getRepository(User::class)->findOneBy(['username' => $username]);
+            $userRepository = $entityManager->getRepository(User::class);
+            $user = $userRepository->findOneBy(['username' => $username]);
 
             if ($user) {
                 // Ajout de l'utilisateur à la liste des joueurs ajoutés en session
                 $addedPlayers = $session->get('added_players', []);
-                $addedPlayers[] = $user->getUsername();
-                $session->set('added_players', $addedPlayers);
+                if (!in_array($user->getUsername(), $addedPlayers)) {
+                    $addedPlayers[] = $user->getUsername();
+                    $session->set('added_players', $addedPlayers);
+                }
             } else {
-                // Gestion de l'erreur si l'utilisateur n'est pas trouvé
 
             }
         }
 
-
+        // Traitement de la soumission du formulaire pour l'ajout d'un nouveau joueur
         $createNewPlayerForm->handleRequest($request);
 
         if ($createNewPlayerForm->isSubmitted()) {
-            $player = new User();
-            $player->setEmail($createNewPlayerForm->get('email')->getData());
+            $firstname = $createNewPlayerForm->get('firstname')->getData();
+            $lastname = $createNewPlayerForm->get('lastname')->getData();
+            $email = $createNewPlayerForm->get('email')->getData();
 
-            $entityManager->persist($player);
-            $entityManager->flush();
+            // Vérification si l'email existe déjà dans la base de données
+            $userRepository = $entityManager->getRepository(User::class);
+            $existingUser = $userRepository->findOneBy(['email' => $email]);
 
-            // Logique pour envoyer l'email ou créer le lien d'invitation
+            if ($existingUser) {
+                $this->addFlash('warning', 'Un utilisateur avec cet email existe déjà.');
+                return $this->redirectToRoute('tournament_add_players', ['id' => $tournament->getId()]);
+            } else {
+                // Création d'un nouvel utilisateur
+                $player = new User();
+                $player->setFirstname($firstname);
+                $player->setLastname($lastname);
+                $player->setEmail($email);
+                $player->setPassword('');
+                $player->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris')));
+                $player->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris')));
 
-            // Redirigez ou affichez un message de succès
+                $entityManager->persist($player);
+                $entityManager->flush();
+
+                // Ajout de l'utilisateur à la liste des joueurs ajoutés en session
+                $addedPlayers = $session->get('added_players', []);
+                if (!in_array($firstname . ' ' . $lastname, $addedPlayers)) {
+                    $addedPlayers[] = $firstname . ' ' . $lastname;
+                    $session->set('added_players', $addedPlayers);
+                }
+            }
+        }
+
+        if ($request->request->get('validate')) {
+            // Logique pour clôturer les équipes 
+            // ...
+
+            // Redirection vers la page du tournoi
+            return $this->redirectToRoute('tournament_show', ['id' => $tournament->getId()]);
         }
 
         $addedPlayers = $session->get('added_players', []);
@@ -112,6 +145,7 @@ class TournamentController extends AbstractController
             'create_new_player_form' => $createNewPlayerForm->createView(),
             'added_players' => $addedPlayers,
         ]);
+
     }
 
 
@@ -120,11 +154,11 @@ class TournamentController extends AbstractController
     {
         $searchTerm = $request->query->get('term', '');
         $users = $userRepository->findByUsernameLike($searchTerm);
-    
+
         $usernames = array_map(function (User $user) {
             return $user->getUsername();
         }, $users);
-    
+
         return new JsonResponse($usernames);
     }
 }

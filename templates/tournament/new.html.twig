@@ -68,6 +68,14 @@
 </div>
 {% endblock %}
 
+{% block javascriptsBrut %}
+<script>
+    $('form').submit(function() {
+        $(this).trigger("reset");
+    });
+</script>
+{% endblock %}
+
 {% block styleBrut %}
 <style>
 	/* 64ac15 */

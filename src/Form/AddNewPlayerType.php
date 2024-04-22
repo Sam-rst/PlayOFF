@@ -21,7 +21,17 @@ class AddNewPlayerType extends AbstractType
         $builder
             ->add('firstname', TextType::class)
             ->add('lastname', TextType::class)
-            ->add('email', EmailType::class);
+            ->add('email', EmailType::class)
+            ->add('gender', EntityType::class, [
+                'class' => Gender::class,
+                'choice_label' => function (Gender $gender) {
+                    return $gender->getGender(); 
+                },
+                'label' => 'Gender Rule',
+                'placeholder' => 'Select a Gender Rule', 
+                'expanded' => true,
+                'multiple' => false, 
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
