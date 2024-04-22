@@ -27,26 +27,28 @@ class TournamentController extends AbstractController
     {
         $tournament = new Tournament();
         $form = $this->createForm(TournamentType::class, $tournament);
-
         $form->handleRequest($request);
+    
+        if ($form->isSubmitted()) {
 
-        if ($form->isSubmitted() && $form->isValid()) {
+            $tournament->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris')));
+
+
             $entityManager->persist($tournament);
             $entityManager->flush();
-
+    
             $this->addFlash('success', 'Tournament created successfully!');
-
             return $this->redirectToRoute('tournament_success');
         }
-
+    
+        // If the form is not submitted or not valid, render the form
         return $this->render('tournament/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
-
     #[Route('/tournament/success', name: 'tournament_success')]
     public function success(): Response
     {
-        return $this->render('tournament/success.html.twig');
+        return $this->render('tournament/succes.html.twig');
     }
 }
