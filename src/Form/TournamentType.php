@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+
 use App\Entity\Gender;
 use App\Entity\Sport;
 use App\Entity\Tournament;
@@ -21,6 +22,7 @@ class TournamentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+
             ->add('name', null, [
                 'label' => 'Tournament Name',
             ])
@@ -86,6 +88,7 @@ class TournamentType extends AbstractType
                 'label' => 'Participating Players',
                 'multiple' => true,
             ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

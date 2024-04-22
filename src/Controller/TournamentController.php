@@ -27,6 +27,7 @@ class TournamentController extends AbstractController
     {
         $tournament = new Tournament();
         $form = $this->createForm(TournamentType::class, $tournament);
+
         $form->handleRequest($request);
     
         if ($form->isSubmitted()) {
@@ -42,13 +43,16 @@ class TournamentController extends AbstractController
         }
     
         // If the form is not submitted or not valid, render the form
+
         return $this->render('tournament/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
-    #[Route('/tournament/success', name: 'tournament_success')]
+
+  #[Route('/tournament/success', name: 'tournament_success')]
     public function success(): Response
     {
         return $this->render('tournament/succes.html.twig');
+
     }
 }
