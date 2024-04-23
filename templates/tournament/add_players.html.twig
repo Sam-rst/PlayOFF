@@ -43,7 +43,7 @@
 			{# Vérifier s'il y a un nombre défini de joueurs par équipe #}
 			{% set playersPerTeam = tournament.numberPlayersPerTeam ?? 1 %}
 
-			<p>Nombre de joueurs par équipe :{{ tournament.numberPlayersPerTeam }}</p>
+			<p>Nombre de joueurs par équipe : {{ tournament.numberPlayersPerTeam }}</p>
 
 			{# Calculer le nombre total d'équipes nécessaires #}
 			{% set totalTeams = (addedPlayers|length / playersPerTeam)|round(0, 'ceil') %}
