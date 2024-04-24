@@ -18,4 +18,10 @@ class ProfileController extends AbstractController
             'user' => $user,
         ]);
     }
+
+    #[Route('/profile/my_tournaments', name: 'my_tournaments')]
+    public function myTournaments(): Response
+    {
+        return $this->render('tournament/my_tournaments.html.twig');
+    }
 }
