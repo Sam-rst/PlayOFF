@@ -66,12 +66,19 @@ class TournamentController extends AbstractController
     #[Route('/tournament/{id}/add_players', name: 'tournament_add_players')]
     public function addPlayers(Tournament $tournament, Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
+        $tournamentId = $tournament->getId();
+
         // Création des formulaires
         $addExistingPlayerForm = $this->createForm(AddExistingPlayerType::class);
         $createNewPlayerForm = $this->createForm(AddNewPlayerType::class);
 
         // Traitement de la soumission du formulaire pour l'ajout d'un joueur existant
         $addExistingPlayerForm->handleRequest($request);
+        $createNewPlayerForm->handleRequest($request);
+
+        // Initialiser la liste des joueurs pour ce tournoi
+        $addedPlayers = $session->get('added_players', []);
+        $tournamentPlayers = $addedPlayers[$tournamentId] ?? [];
 
         if ($addExistingPlayerForm->isSubmitted()) {
             $username = $addExistingPlayerForm->get('username')->getData();
@@ -82,19 +89,18 @@ class TournamentController extends AbstractController
 
             if ($user) {
                 // Ajout de l'utilisateur à la liste des joueurs ajoutés en session
-                $addedPlayers = $session->get('added_players', []);
                 if (!in_array($user->getUsername(), $addedPlayers)) {
-                    $addedPlayers[] = $user->getUsername();
+                    $tournamentPlayers[] = $user->getUsername();
+                    $addedPlayers[$tournamentId] = $tournamentPlayers;
                     $session->set('added_players', $addedPlayers);
                 }
             } else {
-
+                //
             }
         }
 
-        // Traitement de la soumission du formulaire pour l'ajout d'un nouveau joueur
-        $createNewPlayerForm->handleRequest($request);
 
+        // Traitement de la soumission du formulaire pour l'ajout d'un nouveau joueur
         if ($createNewPlayerForm->isSubmitted()) {
             $firstname = $createNewPlayerForm->get('firstname')->getData();
             $lastname = $createNewPlayerForm->get('lastname')->getData();
@@ -106,7 +112,6 @@ class TournamentController extends AbstractController
 
             if ($existingUser) {
                 $this->addFlash('warning', 'Un utilisateur avec cet email existe déjà.');
-                return $this->redirectToRoute('tournament_add_players', ['id' => $tournament->getId()]);
             } else {
                 // Création d'un nouvel utilisateur
                 $player = new User();
@@ -121,9 +126,10 @@ class TournamentController extends AbstractController
                 $entityManager->flush();
 
                 // Ajout de l'utilisateur à la liste des joueurs ajoutés en session
-                $addedPlayers = $session->get('added_players', []);
-                if (!in_array($firstname . ' ' . $lastname, $addedPlayers)) {
-                    $addedPlayers[] = $firstname . ' ' . $lastname;
+                $newPlayerName = $firstname . ' ' . $lastname;
+                if (!in_array($newPlayerName, $tournamentPlayers)) {
+                    $tournamentPlayers[] = $newPlayerName;
+                    $addedPlayers[$tournamentId] = $tournamentPlayers;
                     $session->set('added_players', $addedPlayers);
                 }
             }
@@ -145,7 +151,6 @@ class TournamentController extends AbstractController
             'create_new_player_form' => $createNewPlayerForm->createView(),
             'added_players' => $addedPlayers,
         ]);
-
     }
 
 
@@ -160,5 +165,19 @@ class TournamentController extends AbstractController
         }, $users);
 
         return new JsonResponse($usernames);
+    }
+
+    #[Route('/tournament/remove_player/{username}', name: 'tournament_remove_player', methods: ['POST'])]
+    public function removePlayer(Request $request, SessionInterface $session, $username) {
+        // Logique pour retirer un joueur de la session ou de la base de données
+        // Répondre avec un JSON
+        return new JsonResponse(['success' => true]);
+    }
+    
+    #[Route('/tournament/swap_players', name: 'tournament_swap_players', methods: ['POST'])]
+    public function swapPlayers(Request $request, SessionInterface $session) {
+        // Logique pour échanger les joueurs
+        // Répondre avec un JSON
+        return new JsonResponse(['success' => true]);
     }
 }
