@@ -5,38 +5,91 @@
 
 {% block body %}
 	<div class="container text-center my-3">
-
-		{% if app.user %}
-			<div class="mb-3">
-				Vous êtes connecté(e) en tant que
-				{{ app.user.userIdentifier }},
-				<a href="{{ path('app_logout') }}">Se déconnecter</a>
+		{% if messages and messageColor %}
+			<div class="alert alert-{{ messageColor }}">
+				{% for message in messages %}
+					{{ message }}
+					<br>
+				{% endfor %}
 			</div>
 		{% endif %}
 
+		{{ form_start(registrationForm) }}
 		<h1 class="h3 mb-3 font-weight-normal">M'inscrire</h1>
 
-		{{ form_errors(registrationForm) }}
+		{{ form_widget(registrationForm._token) }}
+		<div class="row my-3">
+			<div class="col-6">
+				<div class="form-floating">
+					{{ form_widget(registrationForm.firstname) }}
+					<label for="inputEmail">Prénom</label>
+				</div>
+			</div>
+			<div class="col-6">
+				<div class="form-floating">
+					{{ form_widget(registrationForm.lastname) }}
+					<label for="inputEmail">Nom</label>
+				</div>
+			</div>
+		</div>
+		<div class="row my-3">
+			<div class="col-4">
+				<div class="form-floating">
+					{{ form_widget(registrationForm.username) }}
+					<label for="inputEmail">Pseudo</label>
+				</div>
+			</div>
+			<div class="col-8">
+				<div class="form-floating">
+					{{ form_widget(registrationForm.email) }}
+					<label for="inputEmail">Email</label>
+				</div>
+			</div>
+		</div>
+		<div class="row my-3">
+			<h5 class="text-start">Date de naissance</h5>
+			<div class="col-4">
+				<div class="input-group">
+					<span class="input-group-text">Jour</span>
+					{{ form_widget(registrationForm.birth_day) }}
+				</div>
+			</div>
+			<div class="col-4">
+				<div class="input-group">
+					<span class="input-group-text">Mois</span>
+					{{ form_widget(registrationForm.birth_month) }}
+				</div>
+			</div>
+			<div class="col-4">
+				<div class="input-group">
+					<span class="input-group-text">Année</span>
+					{{ form_widget(registrationForm.birth_year) }}
+				</div>
+			</div>
+		</div>
+		<div class="row my-3">
+			<div class="col-6">
+				<div class="form-floating">
+					{{ form_widget(registrationForm.plainPassword) }}
+					<label for="inputEmail">Mot de passe</label>
+				</div>
+			</div>
+			<div class="col-6">
+				<div class="form-floating">
+					{{ form_widget(registrationForm.confirmPassword) }}
+					<label for="inputEmail">Confirmez votre mot de passe</label>
+				</div>
+			</div>
+		</div>
 
-		{{ form_start(registrationForm) }}
-		<div class="form-floating my-3">
-			{{ form_widget(registrationForm.email) }}
-			<label for="inputEmail">Email</label>
-		</div>
-		<div class="form-floating my-3">
-			{{ form_widget(registrationForm.plainPassword) }}
-			<label for="inputEmail">Mot de passe</label>
-		</div>
-		<div class="form-floating my-3">
-			{{ form_widget(registrationForm.confirmPassword) }}
-			<label for="inputEmail">Confirmez votre mot de passe</label>
-		</div>
-
-		<button type="submit" class="btn btn-primary">S'enrengistrer</button>
-		<div class="my-5">
+		<button type="submit" class="btn btn-primary mt-4">S'enrengistrer</button>
+		
+		<div class="my-2">
 			<p>Déjà inscrit ?
 				<a href="{{ path('app_login') }}">Se connecter</a>
 			</p>
 		</div>
 	</div>
+	{{ form_end(registrationForm) }}
+
 {% endblock %}
