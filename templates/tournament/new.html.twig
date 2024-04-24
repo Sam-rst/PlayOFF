@@ -47,7 +47,7 @@
 			{{ form_row(form.rules) }}
 			<div class="input-group"></div>
 
-			<div class="input-group" style="padding-inline: 5em;" >
+			<div class="input-group" style="padding-inline: 5em;">
 				<div class="col-half">
 					{{ form_label(form.is_public) }}
 				</div>
@@ -65,18 +65,12 @@
 	</div>
 
 	{# {{ form_end(form) }} #}
-</div>
-{% endblock %}
-
-{% block javascriptsBrut %}
+</div>{% endblock %}{% block javascriptsBrut %}
 <script>
-    $('form').submit(function() {
-        $(this).trigger("reset");
-    });
-</script>
-{% endblock %}
-
-{% block styleBrut %}
+	$('form').submit(function () {
+$(this).trigger("reset");
+});
+</script>{% endblock %}{% block styleBrut %}
 <style>
 	/* 64ac15 */
 	*,
@@ -88,11 +82,12 @@
 		padding: 1em;
 		font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 		font-size: 15px;
-		color: #b9b9b9;
 		background-color: #e3e3e3;
+		color: #b47c00;
 	}
 	h4 {
 		color: #f0a500;
+		padding: 1em;
 	}
 	input,
 	input[type="radio"] + label,
@@ -103,7 +98,7 @@
 		padding: 1em;
 		line-height: 1.4;
 		background-color: #f9f9f9;
-		border: 1px solid #e5e5e5;
+		border: 1px solid #b5b4b4;
 		border-radius: 3px;
 		-webkit-transition: 0.35s ease-in-out;
 		-moz-transition: 0.35s ease-in-out;

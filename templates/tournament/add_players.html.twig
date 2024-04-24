@@ -13,11 +13,11 @@
 
 			<div class="row">
 				<div class="input-group">
-					{{ form_start(add_existing_player_form) }}
+					{{ form_start(add_existing_player_form, {'attr': {'id': 'add-existing-player-form'}}) }}
 					<h4>Joueur avec compte</h4>
 					{{ form_row(add_existing_player_form.username, {
-                    'attr': {'class': 'autocomplete-username'}
-                })}}
+						'attr': {'class': 'autocomplete-username'}
+					})}}
 					<button class="btn" type="submit">Ajouter</button>
 					{{ form_end(add_existing_player_form, {'render_rest': false}) }}
 				</div>
@@ -37,23 +37,23 @@
 					<h4>Joueurs ajoutés</h4>
 				</div>
 
-				{# Vérifier s'il y a des joueurs ajoutés en session #}
 				{% set tournamentPlayers = app.session.get('added_players_' ~ tournament.id, []) %}
-
-				{# Vérifier s'il y a un nombre défini de joueurs par équipe #}
 				{% set playersPerTeam = tournament.numberPlayersPerTeam ?? 1 %}
 
-			<p>Nombre de joueurs par équipe : {{ tournament.numberPlayersPerTeam }}</p>
+				<p>Nombre de joueurs par équipe :
+					{{ tournament.numberPlayersPerTeam }}</p>
 
 				{# Calculer le nombre total d'équipes nécessaires #}
 				{% set totalTeams = (tournamentPlayers|length / playersPerTeam)|round(0, 'ceil') %}
 
 				{# Découper les joueurs en équipes #}
 				{% for i in 0..totalTeams - 1 %}
-					<div class="input-group" style="padding-inline: 5em;">
-						<h4>Équipe
-							{{ loop.index }}</h4>
-						<div class="input-group"></div>
+					<div class="team-box">
+						<div class="team-header">
+							<h4 class="team-title">Équipe
+								{{ loop.index }}</h4>
+							<input type="text" class="form-control team-name" placeholder="Saisir le nom de l'équipe" id="team_name_{{ i }}" data-index="{{ i }}">
+						</div>
 						<ul class="player-list">
 							{% for username in tournamentPlayers|slice(i * playersPerTeam, playersPerTeam) %}
 								<li data-username="{{ username }}">
@@ -61,16 +61,13 @@
 									<button class="btn icon-btn remove-player" data-username="{{ username }}" data-index="{{ i }}" title="Supprimer">
 										<i class="fa fa-trash"></i>
 									</button>
-
 									<button class="btn icon-btn" onclick="initSwap('{{ username }}', {{ i }}')" title="Échanger">
 										<i class="fa fa-exchange"></i>
 									</button>
 								</li>
 							{% endfor %}
-
 						</ul>
 					</div>
-
 				{% else %}
 					<div class="input-group">
 						<p>Aucun joueur ajouté.</p>
@@ -100,11 +97,12 @@
 		padding: 1em;
 		font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 		font-size: 15px;
-		color: #b9b9b9;
+		color: #b47c00;
 		background-color: #e3e3e3;
 	}
 	h4 {
 		color: #f0a500;
+		padding: 1em;
 	}
 	input,
 	input[type="radio"] + label,
@@ -115,7 +113,7 @@
 		padding: 1em;
 		line-height: 1.4;
 		background-color: #f9f9f9;
-		border: 1px solid #e5e5e5;
+		border: 1px solid #b5b4b4;
 		border-radius: 3px;
 		-webkit-transition: 0.35s ease-in-out;
 		-moz-transition: 0.35s ease-in-out;
@@ -351,6 +349,57 @@
 
 	.icon-btn i {
 		vertical-align: middle;
+	}
+
+	.team-box {
+		border: 1px solid #ccc;
+		padding: 20px;
+		margin-bottom: 20px;
+		background-color: #f9f9f9;
+		border-radius: 10px; /* Arrondir les coins du carré */
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ajouter une ombre légère */
+	}
+
+	.team-header {
+		margin-bottom: 10px;
+		border-bottom: 2px solid #f0a500; /* Ligne soulignant le titre et l'input */
+		padding-bottom: 10px;
+	}
+
+	.team-title {
+		margin: 0 0 10px; /* Éliminer les marges par défaut du h4 */
+		color: #333; /* Couleur de texte plus sombre pour plus de contraste */
+	}
+
+	.team-name {
+		width: 100%; /* Utiliser toute la largeur disponible */
+		box-sizing: border-box; /* Inclure padding et border dans la largeur */
+	}
+
+	.player-list {
+		list-style: none; /* Enlever les puces */
+		padding: 0; /* Enlever le padding par défaut */
+	}
+
+	.player-list li {
+		padding: 5px 0; /* Ajouter un peu d'espace vertical entre les joueurs */
+	}
+
+	.player-name {
+		display: inline-block;
+		margin-right: 10px;
+	}
+
+	.icon-btn {
+		background: none;
+		border: none;
+		color: #f0a500;
+		cursor: pointer;
+		font-size: 16px; /* Augmenter légèrement la taille de l'icône */
+	}
+
+	.icon-btn:hover {
+		color: #bd8200;
 	}
 
 

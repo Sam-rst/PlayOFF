@@ -11,6 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: TournamentRepository::class)]
 class Tournament
 {
+    public const STATUS_INITIALIZATION = 0;
+    public const STATUS_ADD_PLAYERS = 1;
+    public const STATUS_SELECT_MATCHES = 2;
+    public const STATUS_IN_PROGRESS = 3;
+    public const STATUS_FINISHED = 4;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -66,6 +72,9 @@ class Tournament
 
     #[ORM\ManyToOne(inversedBy: 'tournaments')]
     private ?Gender $gender_rule = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $status = self::STATUS_INITIALIZATION; 
 
     public function __construct()
     {
@@ -296,6 +305,18 @@ class Tournament
     public function setGenderRule(?Gender $gender_rule): static
     {
         $this->gender_rule = $gender_rule;
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?int $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

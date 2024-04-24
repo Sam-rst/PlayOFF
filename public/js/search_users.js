@@ -49,3 +49,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Sélectionne uniquement les champs d'input dans le formulaire spécifique
+    var form = document.getElementById('add-existing-player-form');
+    var inputs = form.querySelectorAll('input[type="text"]');
+
+    inputs.forEach(function(input) {
+        input.value = ' '; 
+    });
+
+});

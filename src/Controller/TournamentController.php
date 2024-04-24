@@ -29,6 +29,23 @@ class TournamentController extends AbstractController
         ]);
     }
 
+    #[Route('/tournament/{id}/open', name: 'tournament_open')]
+public function openTournament(Tournament $tournament): Response {
+    switch ($tournament->getStatus()) {
+        case Tournament::STATUS_INITIALIZATION:
+        case Tournament::STATUS_ADD_PLAYERS:
+            return $this->redirectToRoute('tournament_add_players', ['id' => $tournament->getId()]);
+        case Tournament::STATUS_SELECT_MATCHES:
+            return $this->redirectToRoute('tournament_select_matches', ['id' => $tournament->getId()]);
+        case Tournament::STATUS_IN_PROGRESS:
+            return $this->redirectToRoute('tournament_in_progress', ['id' => $tournament->getId()]);
+        case Tournament::STATUS_FINISHED:
+            return $this->redirectToRoute('tournament_finished', ['id' => $tournament->getId()]);
+        default:
+            return $this->redirectToRoute('home');
+    }
+}
+
     #[Route('/tournament/new', name: 'tournament_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -45,12 +62,9 @@ class TournamentController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Tournament created successfully!');
+            $tournament->setStatus(Tournament::STATUS_ADD_PLAYERS);
             return $this->redirectToRoute('tournament_add_players', ['id' => $tournament->getId()]);
         }
-
-        // If the form is not submitted or not valid, render the form
-
-        $this->addFlash('error', 'Errors Submit Form');
 
         return $this->render('tournament/new.html.twig', [
             'form' => $form->createView(),
@@ -100,7 +114,6 @@ class TournamentController extends AbstractController
             }
         }
 
-
         // Traitement de la soumission du formulaire pour l'ajout d'un nouveau joueur
         if ($createNewPlayerForm->isSubmitted()) {
             $firstname = $createNewPlayerForm->get('firstname')->getData();
@@ -140,6 +153,7 @@ class TournamentController extends AbstractController
             // ...
 
             // Redirection vers la page du tournoi
+            $tournament->setStatus(Tournament::STATUS_SELECT_MATCHES);
             return $this->redirectToRoute('tournament_show', ['id' => $tournament->getId()]);
         }
 
