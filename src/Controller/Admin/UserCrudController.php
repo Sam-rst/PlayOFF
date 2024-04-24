@@ -6,19 +6,14 @@ use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class UserCrudController extends AbstractCrudController
 {
-    use Trait\ReadOnlyTrait;
+    use Trait\ReadAndDeleteTrait;
     public static function getEntityFqcn(): string
     {
         return User::class;
@@ -29,9 +24,11 @@ class UserCrudController extends AbstractCrudController
         return [
             //Index
             IdField::new('id')->hideOnForm(),
+            ArrayField::new('roles')->setLabel('Roles'),
             TextField::new('name')->setLabel('Nom'),
             TextField::new('username')->setLabel('Pseudo'),
             EmailField::new('email'),
+            DateField::new('birth_date')->setLabel('Date de naissance'),
             AssociationField::new('gender')->setLabel('Genre'),
             AssociationField::new('tournaments_organised')->onlyOnIndex()->setLabel('Tournois organisés'),
             AssociationField::new('tournaments_participated')->onlyOnIndex()->setLabel('Tournois participés'),

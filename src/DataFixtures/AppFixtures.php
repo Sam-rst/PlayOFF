@@ -151,6 +151,22 @@ class AppFixtures extends Fixture
             $meetings[] = $meeting;
         }
 
+        foreach(['ROLE_ADMIN', 'ROLE_USER', 'ROLE_GUEST'] as $role) {
+            $user = new User();
+            $user
+                ->setFirstname($faker->firstName())
+                ->setLastname($faker->lastName())
+                ->setEmail(strtolower($role) . '@test.fr')
+                ->setUsername($faker->userName())
+                ->setPassword($role)
+                ->setRoles([$role])
+                ->setGender($faker->randomElement(array_filter($genders, fn ($gender) => $gender->getGender() !== 'Mixte')))
+                ->setCreatedAt(DateTimeImmutable::createFromMutable($faker->dateTime()))
+                ->setUpdatedAt(DateTimeImmutable::createFromMutable($faker->dateTime()));
+            $manager->persist($user);
+            $users[] = $user;
+        }
+
         $manager->flush();
     }
 }
