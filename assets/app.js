@@ -1,5 +1,4 @@
 import './js/bootstrap.js';
-import './js/toats.js';
 /*
  * Welcome to your app's main JavaScript file!
  *

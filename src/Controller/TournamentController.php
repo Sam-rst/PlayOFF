@@ -76,9 +76,11 @@ class TournamentController extends AbstractController
         $addExistingPlayerForm->handleRequest($request);
         $createNewPlayerForm->handleRequest($request);
 
+        $sessionKey = 'added_players_' . $tournamentId;
+
         // Initialiser la liste des joueurs pour ce tournoi
-        $addedPlayers = $session->get('added_players', []);
-        $tournamentPlayers = $addedPlayers[$tournamentId] ?? [];
+        $addedPlayers = $session->get($sessionKey, []);
+        $tournamentPlayers = $addedPlayers ?? [];
 
         if ($addExistingPlayerForm->isSubmitted()) {
             $username = $addExistingPlayerForm->get('username')->getData();
@@ -89,10 +91,9 @@ class TournamentController extends AbstractController
 
             if ($user) {
                 // Ajout de l'utilisateur à la liste des joueurs ajoutés en session
-                if (!in_array($user->getUsername(), $addedPlayers)) {
+                if (!in_array($user->getUsername(), $tournamentPlayers)) {
                     $tournamentPlayers[] = $user->getUsername();
-                    $addedPlayers[$tournamentId] = $tournamentPlayers;
-                    $session->set('added_players', $addedPlayers);
+                    $session->set($sessionKey, $tournamentPlayers);
                 }
             } else {
                 //
@@ -129,8 +130,7 @@ class TournamentController extends AbstractController
                 $newPlayerName = $firstname . ' ' . $lastname;
                 if (!in_array($newPlayerName, $tournamentPlayers)) {
                     $tournamentPlayers[] = $newPlayerName;
-                    $addedPlayers[$tournamentId] = $tournamentPlayers;
-                    $session->set('added_players', $addedPlayers);
+                    $session->set($sessionKey, $tournamentPlayers);
                 }
             }
         }
@@ -143,13 +143,11 @@ class TournamentController extends AbstractController
             return $this->redirectToRoute('tournament_show', ['id' => $tournament->getId()]);
         }
 
-        $addedPlayers = $session->get('added_players', []);
-
         return $this->render('tournament/add_players.html.twig', [
             'tournament' => $tournament,
             'add_existing_player_form' => $addExistingPlayerForm->createView(),
             'create_new_player_form' => $createNewPlayerForm->createView(),
-            'added_players' => $addedPlayers,
+            'added_players' => $tournamentPlayers,
         ]);
     }
 
@@ -167,17 +165,51 @@ class TournamentController extends AbstractController
         return new JsonResponse($usernames);
     }
 
-    #[Route('/tournament/remove_player/{username}', name: 'tournament_remove_player', methods: ['POST'])]
-    public function removePlayer(Request $request, SessionInterface $session, $username) {
-        // Logique pour retirer un joueur de la session ou de la base de données
-        // Répondre avec un JSON
-        return new JsonResponse(['success' => true]);
+    #[Route('/tournament/{tournamentId}/remove_player/{username}', name: 'tournament_remove_player', methods: ['POST'])]
+    public function removePlayer(Request $request, SessionInterface $session, $tournamentId, $username) {
+        // Préparation de la clé de session en utilisant l'ID de tournoi
+        $sessionKey = 'added_players_' . $tournamentId;
+    
+        // Récupération de la liste des joueurs ajoutés depuis la session
+        $tournamentPlayers = $session->get($sessionKey, []);
+    
+        // Trouver l'index du joueur à supprimer et le supprimer s'il existe
+        $index = array_search($username, $tournamentPlayers);
+        if ($index !== false) {
+            unset($tournamentPlayers[$index]);
+            // Réindexer l'array après suppression pour éviter les problèmes avec les index manquants
+            $tournamentPlayers = array_values($tournamentPlayers);
+            // Sauvegarder la nouvelle liste des joueurs dans la session
+            $session->set($sessionKey, $tournamentPlayers);
+        }
+    
+        // Retourner une réponse JSON indiquant le succès ou l'échec de l'opération
+        return new JsonResponse(['success' => true, 'remainingPlayers' => $tournamentPlayers]);
     }
+    
     
     #[Route('/tournament/swap_players', name: 'tournament_swap_players', methods: ['POST'])]
     public function swapPlayers(Request $request, SessionInterface $session) {
-        // Logique pour échanger les joueurs
-        // Répondre avec un JSON
-        return new JsonResponse(['success' => true]);
+    //     $username1 = $request->get('username1');
+    //     $username2 = $request->get('username2');
+    //     $tournamentId = $request->get('tournamentId'); // Assurez-vous que tournamentId est passé avec la requête
+    
+    //     $addedPlayers = $session->get('added_players', []);
+    
+    //     // Trouver les indices et permuter
+    //     if (isset($addedPlayers[$tournamentId])) {
+    //         $index1 = array_search($username1, $addedPlayers[$tournamentId]);
+    //         $index2 = array_search($username2, $addedPlayers[$tournamentId]);
+    
+    //         if ($index1 !== false && $index2 !== false) {
+    //             $temp = $addedPlayers[$tournamentId][$index1];
+    //             $addedPlayers[$tournamentId][$index1] = $addedPlayers[$tournamentId][$index2];
+    //             $addedPlayers[$tournamentId][$index2] = $temp;
+    
+    //             $session->set('added_players', $addedPlayers); // Mettre à jour la session
+    //         }
+    //     }
+    
+    //     return new JsonResponse(['success' => true]);
     }
 }
