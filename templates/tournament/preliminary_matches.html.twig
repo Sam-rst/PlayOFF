@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Preliminary Matches for
+	{{ tournament.name }}
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<h1>Preliminary Matches for
+			{{ tournament.name }}</h1>
+
+		{% if matches is not empty %}
+			<form action="{{ path('validate_matches', {'id': tournament.id}) }}" method="post">
+				<div class="list-group mb-3" id="match-list">
+					{% for match in matches %}
+						<div class="list-group-item">
+							<h5 class="mb-1">
+								<button type="button" class="match-team" data-team-id="{{ match.team1.id }}" data-team-name="{{ match.team1.name }}">{{ match.team1.name }}</button>
+								vs
+								<button type="button" class="match-team" data-team-id="{{ match.team2.id }}" data-team-name="{{ match.team2.name }}">{{ match.team2.name }}</button>
+							</h5>
+							<p class="mb-1">Round: Preliminary</p>
+							<input type="hidden" name="matches[{{ loop.index0 }}][team1_id]" value="{{ match.team1.id }}">
+							<input type="hidden" name="matches[{{ loop.index0 }}][team2_id]" value="{{ match.team2.id }}">
+						</div>
+					{% endfor %}
+				</div>
+				<button type="submit" class="btn btn-primary">Validate Matches</button>
+			</form>
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block javascriptsBrut %}
+	<script src="{{ asset('js/switch_match.js') }}"></script>
+{% endblock %}
+{% block styleBrut %}
+	<style>
+		/* General container and heading styles */
+		.container {
+			max-width: 800px;
+			margin: auto;
+			background-color: #f8f9fa;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		h1 {
+			color: #333;
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		/* Style for the match list and items */
+		.list-group {
+			list-style: none;
+			padding: 0;
+		}
+
+		.list-group-item {
+			background-color: #fff;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			padding: 15px;
+			margin-bottom: 10px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		/* Button styles for team selection */
+		.match-team {
+			background-color: #ccc; /* Gray for team buttons */
+			border: none;
+			border-radius: 4px;
+			color: white;
+			padding: 10px 20px;
+			margin: 0 5px;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+
+		.match-team:hover,
+		.match-team.selected {
+			background-color: #f0a500; /* Darker gray for hover and selected state */
+		}
+
+		/* Style for the 'Validate Matches' button */
+		.btn-primary {
+			background-color: #f0a500; /* Orange color as specified */
+			border: none;
+			border-radius: 4px;
+			color: white;
+			padding: 10px 20px;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+
+		.btn-primary:hover {
+			background-color: #cc8400; /* A darker shade of orange for hover state */
+		}
+
+		/* Helper classes for text */
+		.mb-1 {
+			margin-bottom: 0.25rem;
+		}
+
+		.mb-3 {
+			margin-bottom: 1rem;
+		}
+	</style>
+{% endblock %}

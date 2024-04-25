@@ -2,7 +2,8 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter Joueur
+{% block title %}
+	Ajouter Joueur
 {% endblock %}
 
 {% block body %}
@@ -25,10 +26,9 @@
 				<div class="input-group">
 					<h4>Joueur sans compte</h4>
 					{{ form_start(create_new_player_form) }}
+					{{ form_row(create_new_player_form.username) }}
 					{{ form_row(create_new_player_form.firstname) }}
 					{{ form_row(create_new_player_form.lastname) }}
-					{{ form_row(create_new_player_form.email) }}
-					{{ form_row(create_new_player_form.gender) }}
 					<button class="btn" type="submit">Ajouter</button>
 					{{ form_end(create_new_player_form, {'render_rest': false}) }}
 				</div>
@@ -40,13 +40,10 @@
 				{% set tournamentPlayers = app.session.get('added_players_' ~ tournament.id, []) %}
 				{% set playersPerTeam = tournament.numberPlayersPerTeam ?? 1 %}
 
-				<p>Nombre de joueurs par équipe :
+				<p>Nombre de joueurs par équipe:
 					{{ tournament.numberPlayersPerTeam }}</p>
 
-				{# Calculer le nombre total d'équipes nécessaires #}
 				{% set totalTeams = (tournamentPlayers|length / playersPerTeam)|round(0, 'ceil') %}
-
-				{# Découper les joueurs en équipes #}
 				{% for i in 0..totalTeams - 1 %}
 					<div class="team-box">
 						<div class="team-header">
@@ -73,340 +70,342 @@
 						<p>Aucun joueur ajouté.</p>
 					</div>
 				{% endfor %}
+				{% if totalTeams > 1 %}
+					<button class="btn" id="validate-teams">Valider les équipes</button>
+				{% endif %}
 			</div>
-
 
 		</div>
 	</div>
+{% endblock %}
 
-</div>
+{% block javascriptsBrut %}
+	<script src="{{ asset('js/search_users.js') }}"></script>
+	<script src="{{ asset('js/update_player.js') }}"></script>
+{% endblock %}
 
-
-{# <a href="{{ path('some_route_to_create_invitation_link') }}">Créer un lien d'invitation</a> #}{% endblock %}{% block javascriptsBrut %}
-{{ parent() }}
-<script src="{{ asset('js/search_users.js') }}"></script>
-<script src="{{ asset('js/update_player.js') }}"></script>{% endblock %}{% block styleBrut %}
-<style>
-	/* 64ac15 */
-	*,
-	*:before,
-	*:after {
-		box-sizing: border-box;
-	}
-	body {
-		padding: 1em;
-		font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-		font-size: 15px;
-		color: #b47c00;
-		background-color: #e3e3e3;
-	}
-	h4 {
-		color: #f0a500;
-		padding: 1em;
-	}
-	input,
-	input[type="radio"] + label,
-	input[type="checkbox"] + label:before,
-	select option,
-	select {
-		width: 100%;
-		padding: 1em;
-		line-height: 1.4;
-		background-color: #f9f9f9;
-		border: 1px solid #b5b4b4;
-		border-radius: 3px;
-		-webkit-transition: 0.35s ease-in-out;
-		-moz-transition: 0.35s ease-in-out;
-		-o-transition: 0.35s ease-in-out;
-		transition: 0.35s ease-in-out;
-		transition: all 0.35s ease-in-out;
-	}
-	input:focus {
-		outline: 0;
-		border-color: #bd8200;
-	}
-	input:focus + .input-icon i {
-		color: #f0a500;
-	}
-	input:focus + .input-icon:after {
-		border-right-color: #f0a500;
-	}
-	input[type="radio"] {
-		display: none;
-	}
-	input[type="radio"] + label,
-	select {
-		display: inline-block;
-		min-width: 238px;
-		text-align: center;
-		float: left;
-		border-radius: 0;
-	}
-	input[type="radio"] + label:first-of-type {
-		border-top-left-radius: 3px;
-		border-bottom-left-radius: 3px;
-	}
-	input[type="radio"] + label:last-of-type {
-		border-top-right-radius: 3px;
-		border-bottom-right-radius: 3px;
-	}
-	input[type="radio"] + label i {
-		padding-right: 0.4em;
-	}
-	input[type="radio"]:checked + label,
-	input:checked + label:before,
-	select:focus,
-	select:active {
-		background-color: #f0a500;
-		color: #fff;
-		border-color: #bd8200;
-	}
-	input:checked + label:after {
-		opacity: 1;
-	}
-	select {
-		height: 3.4em;
-		line-height: 2;
-	}
-	select:first-of-type {
-		border-top-left-radius: 3px;
-		border-bottom-left-radius: 3px;
-	}
-	select:last-of-type {
-		border-top-right-radius: 3px;
-		border-bottom-right-radius: 3px;
-	}
-	select:focus,
-	select:active {
-		outline: 0;
-	}
-	select option {
-		background-color: #f0a500;
-		color: #fff;
-	}
-	.input-group {
-		margin-bottom: 1em;
-
-		zoom: 1;
-	}
-	.input-group:before,
-	.input-group:after {
-		content: "";
-		display: table;
-	}
-	.input-group:after {
-		clear: both;
-	}
-	.input-group-icon {
-		position: relative;
-	}
-	.input-group-icon input {
-		padding-left: 4.4em;
-	}
-	.input-group-icon .input-icon {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 3.4em;
-		height: 3.4em;
-		line-height: 3.4em;
-		text-align: center;
-		pointer-events: none;
-	}
-	.input-group-icon .input-icon:after {
-		position: absolute;
-		top: 0.6em;
-		bottom: 0.6em;
-		left: 3.4em;
-		display: block;
-		border-right: 1px solid #e5e5e5;
-		content: "";
-		-webkit-transition: 0.35s ease-in-out;
-		-moz-transition: 0.35s ease-in-out;
-		-o-transition: 0.35s ease-in-out;
-		transition: 0.35s ease-in-out;
-		transition: all 0.35s ease-in-out;
-	}
-	.input-group-icon .input-icon i {
-		-webkit-transition: 0.35s ease-in-out;
-		-moz-transition: 0.35s ease-in-out;
-		-o-transition: 0.35s ease-in-out;
-		transition: 0.35s ease-in-out;
-		transition: all 0.35s ease-in-out;
-	}
-	.container {
-		max-width: 38em;
-		padding: 1em 3em 2em;
-		margin: 0 auto;
-		background-color: #fff;
-		border-radius: 4.2px;
-		box-shadow: 0 3px 10px -2px rgba(0, 0, 0, 0.2);
-	}
-	.row {
-		zoom: 1;
-	}
-	.row:before,
-	.row:after {
-		content: "";
-		display: table;
-	}
-	.row:after {
-		clear: both;
-	}
-	.col-half {
-		padding-right: 10px;
-		float: left;
-		width: 50%;
-	}
-	.col-half:last-of-type {
-		padding-right: 0;
-	}
-	.col-third {
-		padding-right: 10px;
-		float: left;
-		width: 33.33333333%;
-	}
-	.col-third:last-of-type {
-		padding-right: 0;
-	}
-
-	.custom-textarea {
-		width: 100%;
-		padding: 10px;
-		border: 1px solid #e5e5e5;
-		border-radius: 3px;
-
-	}
-
-	.btn {
-		display: inline-block;
-		padding: 10px 20px;
-		margin: 10px 0;
-		background-color: #f0a500;
-		color: white;
-		text-align: center;
-		border: none;
-		border-radius: 4px;
-		cursor: pointer;
-		-webkit-transition: background-color 0.3s ease;
-		transition: background-color 0.3s ease;
-	}
-	.btn:hover {
-		background-color: #bd8200;
-	}
-	.checkbox input[type="checkbox"] {
-		/* Style to visually hide the checkbox but keep it accessible */
-		position: absolute;
-		left: -9999px;
-	}
-
-	.checkbox label {
-		position: relative;
-		padding-left: 25px;
-		cursor: pointer;
-	}
-
-	.checkbox label:before {
-		content: '';
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 20px;
-		height: 20px;
-		border: 1px solid #ccc;
-		background-color: #f9f9f9;
-		border-radius: 3px;
-	}
-
-	.checkbox input[type="checkbox"]:checked + label:after {
-		content: '';
-		position: absolute;
-		left: 5px;
-		top: 5px;
-		width: 10px;
-		height: 10px;
-		background-color: #f0a500;
-		border-radius: 2px;
-	}
-
-
-	.player-name {
-		flex-grow: 1;
-	}
-
-	.icon-btn {
-		background: none;
-		border: none;
-		color: #333; /* Couleur des icônes */
-		cursor: pointer;
-		padding: 5px 10px;
-		font-size: 16px; /* Taille des icônes */
-	}
-
-	.icon-btn:hover {
-		color: #007BFF; /* Change la couleur au survol */
-	}
-
-	.icon-btn i {
-		vertical-align: middle;
-	}
-
-	.team-box {
-		border: 1px solid #ccc;
-		padding: 20px;
-		margin-bottom: 20px;
-		background-color: #f9f9f9;
-		border-radius: 10px; /* Arrondir les coins du carré */
-		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ajouter une ombre légère */
-	}
-
-	.team-header {
-		margin-bottom: 10px;
-		border-bottom: 2px solid #f0a500; /* Ligne soulignant le titre et l'input */
-		padding-bottom: 10px;
-	}
-
-	.team-title {
-		margin: 0 0 10px; /* Éliminer les marges par défaut du h4 */
-		color: #333; /* Couleur de texte plus sombre pour plus de contraste */
-	}
-
-	.team-name {
-		width: 100%; /* Utiliser toute la largeur disponible */
-		box-sizing: border-box; /* Inclure padding et border dans la largeur */
-	}
-
-	.player-list {
-		list-style: none; /* Enlever les puces */
-		padding: 0; /* Enlever le padding par défaut */
-	}
-
-	.player-list li {
-		padding: 5px 0; /* Ajouter un peu d'espace vertical entre les joueurs */
-	}
-
-	.player-name {
-		display: inline-block;
-		margin-right: 10px;
-	}
-
-	.icon-btn {
-		background: none;
-		border: none;
-		color: #f0a500;
-		cursor: pointer;
-		font-size: 16px; /* Augmenter légèrement la taille de l'icône */
-	}
-
-	.icon-btn:hover {
-		color: #bd8200;
-	}
-
-
-	@media only screen and(max-width: 540px) {
-		.col-half {
+{% block styleBrut %}
+	<style>
+		/* 64ac15 */
+		*,
+		*:before,
+		*:after {
+			box-sizing: border-box;
+		}
+		body {
+			font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+			font-size: 15px;
+			color: #b47c00;
+			background-color: #e3e3e3;
+		}
+		h4 {
+			color: #f0a500;
+			padding: 1em;
+		}
+		input,
+		input[type="radio"] + label,
+		input[type="checkbox"] + label:before,
+		select option,
+		select {
 			width: 100%;
+			padding: 1em;
+			line-height: 1.4;
+			background-color: #f9f9f9;
+			border: 1px solid #b5b4b4;
+			border-radius: 3px;
+			-webkit-transition: 0.35s ease-in-out;
+			-moz-transition: 0.35s ease-in-out;
+			-o-transition: 0.35s ease-in-out;
+			transition: 0.35s ease-in-out;
+			transition: all 0.35s ease-in-out;
+		}
+		input:focus {
+			outline: 0;
+			border-color: #bd8200;
+		}
+		input:focus + .input-icon i {
+			color: #f0a500;
+		}
+		input:focus + .input-icon:after {
+			border-right-color: #f0a500;
+		}
+		input[type="radio"] {
+			display: none;
+		}
+		input[type="radio"] + label,
+		select {
+			display: inline-block;
+			min-width: 238px;
+			text-align: center;
+			float: left;
+			border-radius: 0;
+		}
+		input[type="radio"] + label:first-of-type {
+			border-top-left-radius: 3px;
+			border-bottom-left-radius: 3px;
+		}
+		input[type="radio"] + label:last-of-type {
+			border-top-right-radius: 3px;
+			border-bottom-right-radius: 3px;
+		}
+		input[type="radio"] + label i {
+			padding-right: 0.4em;
+		}
+		input[type="radio"]:checked + label,
+		input:checked + label:before,
+		select:focus,
+		select:active {
+			background-color: #f0a500;
+			color: #fff;
+			border-color: #bd8200;
+		}
+		input:checked + label:after {
+			opacity: 1;
+		}
+		select {
+			height: 3.4em;
+			line-height: 2;
+		}
+		select:first-of-type {
+			border-top-left-radius: 3px;
+			border-bottom-left-radius: 3px;
+		}
+		select:last-of-type {
+			border-top-right-radius: 3px;
+			border-bottom-right-radius: 3px;
+		}
+		select:focus,
+		select:active {
+			outline: 0;
+		}
+		select option {
+			background-color: #f0a500;
+			color: #fff;
+		}
+		.input-group {
+			margin-bottom: 1em;
+			flex-flow: column;
+			zoom: 1;
+		}
+		.input-group:before,
+		.input-group:after {
+			content: "";
+			display: table;
+		}
+		.input-group:after {
+			clear: both;
+		}
+		.input-group-icon {
+			position: relative;
+		}
+		.input-group-icon input {
+			padding-left: 4.4em;
+		}
+		.input-group-icon .input-icon {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 3.4em;
+			height: 3.4em;
+			line-height: 3.4em;
+			text-align: center;
+			pointer-events: none;
+		}
+		.input-group-icon .input-icon:after {
+			position: absolute;
+			top: 0.6em;
+			bottom: 0.6em;
+			left: 3.4em;
+			display: block;
+			border-right: 1px solid #e5e5e5;
+			content: "";
+			-webkit-transition: 0.35s ease-in-out;
+			-moz-transition: 0.35s ease-in-out;
+			-o-transition: 0.35s ease-in-out;
+			transition: 0.35s ease-in-out;
+			transition: all 0.35s ease-in-out;
+		}
+		.input-group-icon .input-icon i {
+			-webkit-transition: 0.35s ease-in-out;
+			-moz-transition: 0.35s ease-in-out;
+			-o-transition: 0.35s ease-in-out;
+			transition: 0.35s ease-in-out;
+			transition: all 0.35s ease-in-out;
+		}
+		.container {
+			max-width: 38em;
+			padding: 1em 3em 2em;
+			margin: 0 auto;
+			background-color: #fff;
+			border-radius: 4.2px;
+			box-shadow: 0 3px 10px -2px rgba(0, 0, 0, 0.2);
+		}
+		.row {
+			zoom: 1;
+		}
+		.row:before,
+		.row:after {
+			content: "";
+			display: table;
+		}
+		.row:after {
+			clear: both;
+		}
+		.col-half {
+			padding-right: 10px;
+			float: left;
+			width: 50%;
+		}
+		.col-half:last-of-type {
 			padding-right: 0;
 		}
-	}
-</style>{% endblock %}
+		.col-third {
+			padding-right: 10px;
+			float: left;
+			width: 33.33333333%;
+		}
+		.col-third:last-of-type {
+			padding-right: 0;
+		}
+
+		.custom-textarea {
+			width: 100%;
+			padding: 10px;
+			border: 1px solid #e5e5e5;
+			border-radius: 3px;
+
+		}
+
+		.btn {
+			display: inline-block;
+			padding: 10px 20px;
+			margin: 10px 0;
+			background-color: #f0a500;
+			color: white;
+			text-align: center;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			-webkit-transition: background-color 0.3s ease;
+			transition: background-color 0.3s ease;
+		}
+		.btn:hover {
+			background-color: #bd8200;
+		}
+		.checkbox input[type="checkbox"] {
+			/* Style to visually hide the checkbox but keep it accessible */
+			position: absolute;
+			left: -9999px;
+		}
+
+		.checkbox label {
+			position: relative;
+			padding-left: 25px;
+			cursor: pointer;
+		}
+
+		.checkbox label:before {
+			content: '';
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 20px;
+			height: 20px;
+			border: 1px solid #ccc;
+			background-color: #f9f9f9;
+			border-radius: 3px;
+		}
+
+		.checkbox input[type="checkbox"]:checked + label:after {
+			content: '';
+			position: absolute;
+			left: 5px;
+			top: 5px;
+			width: 10px;
+			height: 10px;
+			background-color: #f0a500;
+			border-radius: 2px;
+		}
+
+
+		.player-name {
+			flex-grow: 1;
+		}
+
+		.icon-btn {
+			background: none;
+			border: none;
+			color: #333; /* Couleur des icônes */
+			cursor: pointer;
+			padding: 5px 10px;
+			font-size: 16px; /* Taille des icônes */
+		}
+
+		.icon-btn:hover {
+			color: #007BFF; /* Change la couleur au survol */
+		}
+
+		.icon-btn i {
+			vertical-align: middle;
+		}
+
+		.team-box {
+			border: 1px solid #ccc;
+			padding: 20px;
+			margin-bottom: 20px;
+			background-color: #f9f9f9;
+			border-radius: 10px; /* Arrondir les coins du carré */
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ajouter une ombre légère */
+		}
+
+		.team-header {
+			margin-bottom: 10px;
+			border-bottom: 2px solid #f0a500; /* Ligne soulignant le titre et l'input */
+			padding-bottom: 10px;
+		}
+
+		.team-title {
+			margin: 0 0 10px; /* Éliminer les marges par défaut du h4 */
+			color: #333; /* Couleur de texte plus sombre pour plus de contraste */
+		}
+
+		.team-name {
+			width: 100%; /* Utiliser toute la largeur disponible */
+			box-sizing: border-box; /* Inclure padding et border dans la largeur */
+		}
+
+		.player-list {
+			list-style: none; /* Enlever les puces */
+			padding: 0; /* Enlever le padding par défaut */
+		}
+
+		.player-list li {
+			padding: 5px 0; /* Ajouter un peu d'espace vertical entre les joueurs */
+		}
+
+		.player-name {
+			display: inline-block;
+			margin-right: 10px;
+		}
+
+		.icon-btn {
+			background: none;
+			border: none;
+			color: #f0a500;
+			cursor: pointer;
+			font-size: 16px; /* Augmenter légèrement la taille de l'icône */
+		}
+
+		.icon-btn:hover {
+			color: #bd8200;
+		}
+
+
+		@media only screen and(max-width: 540px) {
+			.col-half {
+				width: 100%;
+				padding-right: 0;
+			}
+		}
+	</style>
+{% endblock %}

@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var inputs = form.querySelectorAll('input[type="text"]');
 
     inputs.forEach(function(input) {
-        input.value = ' '; 
+        input.value = ''; 
     });
 
 });
