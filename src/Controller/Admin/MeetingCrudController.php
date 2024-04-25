@@ -9,10 +9,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MeetingCrudController extends AbstractCrudController
 {
     use Trait\ReadOnlyTrait;
+    #[IsGranted('ROLE_ADMIN')]
     public static function getEntityFqcn(): string
     {
         return Meeting::class;

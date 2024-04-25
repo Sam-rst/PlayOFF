@@ -14,10 +14,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use phpDocumentor\Reflection\Types\ArrayKey;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class TournamentCrudController extends AbstractCrudController
 {
     use Trait\ReadOnlyTrait;
+    #[IsGranted('ROLE_ADMIN')]
     public static function getEntityFqcn(): string
     {
         return Tournament::class;

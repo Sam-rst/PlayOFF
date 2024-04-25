@@ -1,20 +1,112 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+	<header class="bg-dark py-5">
+		<div class="container px-5">
+			<div class="row gx-5 justify-content-center">
+				<div class="col-lg-6">
+					<div class="text-center my-5">
+						{% if app.user %}
+							<h1 class="display-5 fw-bolder text-white mb-2">Bonjour
+								{{ user.getName() }}
+								!</h1>
+							<p class="lead text-white-50 mb-4">Si vous souhaitez créer des tournois entre potes ou bien vous décidez de réaliser un tournoi amateur dans n'IMPORTE QUELLE activitée, vous êtes au bon endroit !</p>
+							<div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+								<a class="btn btn-primary px-4 me-sm-3" href="{{ path('app_logout') }}">Se déconnecter</a>
+							</div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/paulc/OneDrive/Documents/GitHub/GoPlayOFF/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/Users/paulc/OneDrive/Documents/GitHub/GoPlayOFF/templates/home/index.html.twig</code></li>
-    </ul>
-</div>
-{% endblock %}
+						{% else %}
+							<h1 class="display-5 fw-bolder text-white mb-2">Bienvenue sur PlayOFF !</h1>
+							<p class="lead text-white-50 mb-4">Si vous souhaitez créer des tournois entre potes ou bien vous décidez de réaliser un tournoi amateur dans n'IMPORTE QUELLE activitée, vous êtes au bon endroit !</p>
+							<div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+								<a class="btn btn-primary btn-lg px-4 me-sm-3" href="{{ path('app_register') }}">Je m'inscris !</a>
+								<a class="btn btn-outline-light btn-lg px-4" href="{{ path('app_login') }}">Déjà un compte ?</a>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- Pricing section-->
+	<section class="bg-light py-5 border-bottom">
+		<div class="container px-5 my-5">
+			<div class="text-center mb-5">
+				<h2 class="fw-bolder">Tournois en cours</h2>
+			</div>
+			<div
+				class="row gx-5 justify-content-center">
+				<!-- Pricing card free-->
+				{% if app.user %}
+					{% if tournamentsParticipated == [] %}
+						{% for tournament in tournamentsParticipated %}
+							<div class="col-lg-6 col-xl-4">
+								<div class="card mb-5 mb-xl-0">
+									<div class="card-body p-5">
+										<div class="small text-uppercase fw-bold text-muted">{{ tournament.getSport() }}</div>
+										<div class="mb-3">
+											<span class="display-4 fw-bold">{{ tournament.getName() }}</span>
+											<span class="text-muted">{{ tournament.getOrganisator() }}</span>
+										</div>
+										<ul class="list-unstyled mb-4">
+											<li class="mb-2">
+												<i class="bi bi-check text-primary"></i>
+												<strong>{{ tournament.getNumberPlayers() }}</strong>
+											</li>
+											<li class="mb-2">
+												<i class="bi bi-check text-primary"></i>
+												5GB storage
+											</li>
+											<li class="mb-2">
+												<i class="bi bi-check text-primary"></i>
+												Unlimited public projects
+											</li>
+											<li class="mb-2">
+												<i class="bi bi-check text-primary"></i>
+												Community access
+											</li>
+											<li class="mb-2 text-muted">
+												<i class="bi bi-x"></i>
+												Unlimited private projects
+											</li>
+											<li class="mb-2 text-muted">
+												<i class="bi bi-x"></i>
+												Dedicated support
+											</li>
+											<li class="mb-2 text-muted">
+												<i class="bi bi-x"></i>
+												Free linked domain
+											</li>
+											<li class="text-muted">
+												<i class="bi bi-x"></i>
+												Monthly status reports
+											</li>
+										</ul>
+										<div class="d-grid">
+											<a class="btn btn-outline-primary" href="#!">Choose plan</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+					{% else %}
+						<div class="text-center">
+							<p class="lead mb-0 py-3">Vous n'avez aucun tournoi en cours.</p>
+							<a class="btn btn-primary btn-lg px-4 me-sm-3" href="{{ path('tournament_new') }}">Je veux en créer un !</a>
+						</div>
+					{% endif %}
+				{% else %}
+					<p class="lead mb-0">C'est ici que vous pourrez apercevoir les tournois auquels vous participez</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</section>
+<!-- Footer-->
+<footer class="py-5 bg-dark">
+	<div class="container px-5">
+		<p class="m-0 text-center text-white">Copyright &copy; PlayOFF 2024</p>
+	</div>
+</footer>{% endblock %}

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,8 +12,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class ProfileController extends AbstractController
 {
     #[Route('/profile', name: 'app_profile')]
-    public function index(UserRepository $userRepository): Response
+    public function index(): Response
     {
+
         // Récupérer l'utilisateur connecté
         $user = $this->getUser();
     
@@ -23,11 +25,18 @@ class ProfileController extends AbstractController
         // Récupérer les tournois auxquels l'utilisateur a participé
         $tournamentsParticipated = $user->getTournamentsParticipated();
     
+
         return $this->render('profile/index.html.twig', [
             'controller_name' => 'ProfileController',
             'user' => $user,
             'tournamentsParticipated' => $tournamentsParticipated,
         ]);
+    }
+
+    #[Route('/profile/my_tournaments', name: 'my_tournaments')]
+    public function myTournaments(): Response
+    {
+        return $this->render('tournament/my_tournaments.html.twig');
     }
 }
  

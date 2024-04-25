@@ -13,6 +13,7 @@
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
+		{% block styleBrut %}{% endblock %}
 
 		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}
@@ -27,48 +28,60 @@
 	<body>
 		<nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-primary" aria-label="Main navigation">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="#">Offcanvas navbar</a>
+				<a class="navbar-brand" href="{{ path('app_home') }}">
+					<img src="{{ asset('img/logo_playoff.png') }}" alt="logo" width="80" height="70">
+				</a>
 				<button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item">
-							<a class="nav-link active" aria-current="page" href="#">Dashboard</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">Notifications</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">Profile</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">Switch account</a>
+							<a class="nav-link {% if app.request.get('_route') == 'app_home' %}active{% endif %}" aria-current="page" href="{{ path('app_home') }}">Accueil</a>
 						</li>
 						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
+							<a class="nav-link dropdown-toggle {% if app.request.get('_route') in ['tournament_new', 'tournament_success'] %}active{% endif %}" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Tournois</a>
 							<ul class="dropdown-menu" aria-labelledby="dropdown01">
 								<li>
-									<a class="dropdown-item" href="#">Action</a>
+									<a class="dropdown-item" href="{{ path('tournament_new') }}">Nouveau tournoi</a>
 								</li>
 								<li>
-									<a class="dropdown-item" href="#">Another action</a>
+									<a class="dropdown-item" href="#">Organisés</a>
 								</li>
 								<li>
-									<a class="dropdown-item" href="#">Something else here</a>
+									<a class="dropdown-item" href="#">En cours</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="#">Terminés</a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% if app.request.get('_route') == 'app_profile' %}active{% endif %}" aria-current="page" href="{{ path('app_profile') }}">Mon profil</a>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle {% if app.request.get('_route') in ['app_register', 'app_login'] %}active{% endif %}" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Mon compte</a>
+							<ul class="dropdown-menu" aria-labelledby="dropdown01">
+								<li>
+									<a class="dropdown-item" href="{{ path('app_register') }}">Créer un compte</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="{{ path('app_login') }}">Se connecter</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a>
 								</li>
 							</ul>
 						</li>
 					</ul>
-					<form class="d-flex">
-						<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-						<button class="btn btn-outline-success" type="submit">Search</button>
-					</form>
 				</div>
 			</div>
 		</nav>
-		{% block body %}{% endblock %}
 
+		{% block body %}{% endblock %}
+		<script src="{{ asset('js/toast.js') }}"></script>
+    
+		<script src="https://kit.fontawesome.com/6f6ab92816.js" crossorigin="anonymous"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
@@ -76,3 +89,6 @@
 	</body>
 
 </html>
+{% include "_toasts.html.twig" %}
+
+{% block javascriptsBrut %}{% endblock %}
