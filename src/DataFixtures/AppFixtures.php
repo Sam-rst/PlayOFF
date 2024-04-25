@@ -80,7 +80,8 @@ class AppFixtures extends Fixture
                 ->setTypeTournament($type)
                 ->setSport($sport)
                 ->setOrganisator($faker->randomElement($users))
-                ->setCreatedAt(DateTimeImmutable::createFromMutable($faker->dateTime()));
+                ->setCreatedAt(DateTimeImmutable::createFromMutable($faker->dateTime()))
+                ->setStatus($faker->numberBetween(1, 4));
             $manager->persist($tournament);
             $tournaments[] = $tournament;
         }
