@@ -309,6 +309,11 @@ class Tournament
         return $this;
     }
 
+    public function getNumberPlayers(): ?int
+    {
+        return count($this->getParticipatingPlayers());
+    }
+
     public function getStatus(): ?int
     {
         return $this->status;

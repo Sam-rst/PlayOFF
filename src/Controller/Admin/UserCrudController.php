@@ -10,10 +10,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UserCrudController extends AbstractCrudController
 {
     use Trait\ReadAndDeleteTrait;
+    #[IsGranted('ROLE_ADMIN')]
     public static function getEntityFqcn(): string
     {
         return User::class;
