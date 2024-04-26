@@ -26,6 +26,7 @@
 					{% endfor %}
 				</div>
 				<button type="submit" class="btn btn-primary">Validate Matches</button>
+				<button type="button" class="btn btn-primary" onclick="reloadPage()">Random</button>
 			</form>
 		{% endif %}
 	</div>
@@ -33,6 +34,11 @@
 
 {% block javascriptsBrut %}
 	<script src="{{ asset('js/switch_match.js') }}"></script>
+	<script>
+		function reloadPage() {
+		location.reload();
+		}
+	</script>
 {% endblock %}
 {% block styleBrut %}
 	<style>

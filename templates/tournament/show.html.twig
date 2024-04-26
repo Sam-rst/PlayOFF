@@ -1,90 +1,106 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {{ tournament.name }}
+	{{ tournament.name }}
 {% endblock %}
 
 {% block body %}
-    <div class="tournament-container">
-        <h1 class="tournament-title">{{ tournament.name }}</h1>
-        <div class="tournament-details">
-            <p><strong>Rules:</strong> {{ tournament.rules }}</p>
-            <p><strong>Start Time:</strong> {{ tournament.startTime | date('Y-m-d H:i') }}</p>
-            <p><strong>End Time:</strong> {{ tournament.endtime | date('Y-m-d H:i') }}</p>
-            <p><strong>Players per Team:</strong> {{ tournament.numberplayersperteam }}</p>
-            <p><strong>Status:</strong> {{ tournament.status }}</p>
-        </div>
+	<div class="tournament-container">
+		<h1 class="tournament-title">{{ tournament.name }}</h1>
+		<div class="tournament-details">
+			<p>
+				<strong>Rules:</strong>
+				{{ tournament.rules }}</p>
+			<p>
+				<strong>Start Time:</strong>
+				{{ tournament.startTime | date('Y-m-d H:i') }}</p>
+			<p>
+				<strong>End Time:</strong>
+				{{ tournament.endtime | date('Y-m-d H:i') }}</p>
+			<p>
+				<strong>Players per Team:</strong>
+				{{ tournament.numberplayersperteam }}</p>
+			<p>
+				<strong>Status:</strong>
+				{{ tournament.status }}</p>
+		</div>
 
-        <div class="tournament-bracket">
-            {% for round, matches in bracketData %}
-                <div class="round">
-                    <h2 class="round-title">{{ round }}</h2>
-                    <div class="matches">
-                        {% for match in matches %}
-                            <div class="match">
-                                {% for team in match.enrolledTeams %}
-                                    <span class="team">{{ team.name }}</span>
-                                    {% if not loop.last %}<span class="vs">vs</span>{% endif %}
-                                {% endfor %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
+		<div class="tournament-bracket">
+			{% for round, matches in bracketData %}
+				<div class="round">
+					<h2 class="round-title">{{ round }}</h2>
+					<div class="matches">
+						{% for match in matches %}
+							<div class="match">
+								{% for team in match.enrolledTeams %}
+									<span class="team">{{ team.name }}</span>
+									{% if not loop.last %}
+										<span class="vs">vs</span>
+									{% endif %}
+								{% endfor %}
+								<a href="{{ path('app_meeting_edit', {'id': match.id}) }}">Saisir les résultats</a>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
 {% endblock %}
 
 {% block styleBrut %}
-<style>
-    .tournament-container {
-        max-width: 800px;
-        margin: auto;
-        padding: 20px;
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-    }
-    .tournament-title {
-        text-align: center;
-        color: #333;
-        margin-bottom: 30px;
-    }
-    .tournament-details p {
-        font-size: 14px;
-        color: #555;
-        line-height: 1.5;
-    }
-    .tournament-bracket {
-        margin-top: 30px;
-    }
-    .round {
-        margin-bottom: 20px;
-    }
-    .round-title {
-        font-size: 18px;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 10px;
-        margin-bottom: 15px;
-    }
-    .matches {
-        padding-left: 20px;
-    }
-    .match {
-        padding: 10px 0;
-    }
-    .team {
-        display: inline-block;
-        margin-right: 10px;
-        background-color: #e9ecef;
-        padding: 5px 15px;
-        border-radius: 4px;
-        font-weight: bold;
-    }
-    .vs {
-        margin: 0 5px;
-        font-weight: normal;
-        color: #6c757d;
-    }
-</style>
+	<style>
+		.tournament-container {
+			max-width: 800px;
+			margin: auto;
+			padding: 20px;
+			background-color: #f8f9fa;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+		}
+		.tournament-title {
+			text-align: center;
+			color: #333;
+			margin-bottom: 30px;
+		}
+		.tournament-details p {
+			font-size: 14px;
+			color: #555;
+			line-height: 1.5;
+		}
+		.tournament-bracket {
+			margin-top: 30px;
+		}
+		.round {
+			margin-bottom: 20px;
+		}
+		.round-title {
+			font-size: 18px;
+			border-bottom: 1px solid #ccc;
+			padding-bottom: 10px;
+			margin-bottom: 15px;
+		}
+		.matches {
+			padding-left: 20px;
+		}
+		.match {
+			padding: 10px 0;
+		}
+		.team {
+			display: inline-block;
+			margin-right: 10px;
+			background-color: #e9ecef;
+			padding: 5px 15px;
+			border-radius: 4px;
+			font-weight: bold;
+		}
+		.vs {
+			margin: 0 5px;
+			font-weight: normal;
+			color: #6c757d;
+		}
+		a {
+			background-color: #6d6d6d;
+		}
+	</style>
 {% endblock %}
