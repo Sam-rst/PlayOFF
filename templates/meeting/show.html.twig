@@ -5,17 +5,18 @@
 
 {% block body %}
 	<div class="container">
-		<h1>Meeting Details</h1>
+		<h1>{{ meeting.name }}</h1>
 
 		<table class="table">
 			<tbody>
 				<tr>
-					<th>Id</th>
-					<td>{{ meeting.id }}</td>
-				</tr>
-				<tr>
-					<th>Name</th>
-					<td>{{ meeting.name }}</td>
+					<th>Equipes</th>
+					<td>
+						{% for team in meeting.getEnrolledTeams() %}
+							<li>{{ team.name }}</li>
+						{% endfor %}
+
+					</td>
 				</tr>
 				<tr>
 					<th>Start Time</th>
@@ -62,7 +63,6 @@
 			</tbody>
 		</table>
 
-		<a class="btn btn-secondary" href="{{ path('app_meeting_index') }}">Back to list</a>
 		<a class="btn btn-primary" href="{{ path('app_meeting_edit', {'id': meeting.id}) }}">Edit</a>
 	</div>
 {% endblock %}
