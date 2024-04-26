@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Meeting
+{% endblock %}
+
+{% block body %}
+	<div class="container text-center my-3">
+		{{ form_start(form) }}
+		<h1 class="h3 mb-3 font-weight-normal">Modifier {{ meeting.name }} de {{ tournament.name }}
+			<a class="btn btn-outline-secondary btn-sm float-end" href="{{ path('app_meeting_index') }}">Revenir</a>
+		</h1>
+
+
+		<div class="row my-3">
+			<div class="col-8">
+				<div class="form-floating">
+					{{ form_widget(form.name) }}
+					<label for="inputEmail">Nom</label>
+				</div>
+			</div>
+			<div class="col-4">
+				<div class="form-floating">
+					{{ form_widget(form.win_condition) }}
+					<label for="inputEmail">Condition de victoire</label>
+				</div>
+			</div>
+		</div>
+		<div class="row my-3">
+			<div class="col-6">
+				<div class="form-floating">
+					{{ form_widget(form.start_time) }}
+					<label for="inputEmail">Date de début</label>
+				</div>
+			</div>
+			<div class="col-6">
+				<div class="form-floating">
+					{{ form_widget(form.end_time) }}
+					<label for="inputEmail">Date de fin</label>
+				</div>
+			</div>
+		</div>
+		<div class="row my-3">
+			<div class="col-6 text-center">
+				<div class="form-floating">
+					{{ form_widget(form.score) }}
+					<label for="inputEmail">Score</label>
+				</div>
+			</div>
+		</div>
+		<div class="row my-5">
+			<table class="table text-start">
+				<thead>
+					<tr>
+						<th scope="col-10">Nom de team</th>
+						<th scope="col-2">Classement</th>
+					</tr>
+				</thead>
+				<tbody class="table-group-divider">
+					{% for team in teams %}
+						<tr>
+							<th>{{ team.name }}</th>
+							<td>
+								<button class="btn btn-warning">Changer</button>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<button class="btn btn-primary mb-5">{{ button_label|default('Sauvegarder') }}</button>
+		{{ form_end(form) }}
+	</div>
+
+{% endblock %}
