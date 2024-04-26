@@ -19,7 +19,7 @@
 			<p>
 				<strong>Nom:</strong>
 				{% if user %}
-					{{ user.LastName() }}
+					{{ user.getLastName() }}
 				{% else %}
 					Nom inconnu
 				{% endif %}
@@ -27,7 +27,7 @@
 			<p>
 				<strong>Prénom:</strong>
 				{% if user %}
-					{{ user.FirstName() }}
+					{{ user.getFirstName() }}
 				{% else %}
 					Prénom inconnu
 				{% endif %}
@@ -42,6 +42,7 @@
 			</p>
 		</div>
 
+		{% set currentUserTeams = user.getTeamsHistory() %}
 		<!-- Onglets pour les statistiques et l'historique des tournois -->
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 			<li class="nav-item">
@@ -50,6 +51,9 @@
 			<li class="nav-item">
 				<a class="nav-link" id="history-tab" data-toggle="tab" href="#history" role="tab" aria-controls="history" aria-selected="false">Historique des Tournois</a>
 			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="organizer-history-tab" data-toggle="tab" href="#organizer-history" role="tab" aria-controls="organizer-history" aria-selected="false">Historique Organisateur</a>
+			</li>
 		</ul>
 
 		<!-- Contenu des onglets -->
@@ -57,49 +61,93 @@
 			class="tab-content" id="myTabContent">
 			<!-- Onglet Statistiques -->
 			<div class="tab-pane fade show active" id="stats" role="tabpanel" aria-labelledby="stats-tab">
-				<h3>Statistiques</h3>
-				<p>Nombre de victoires:
-					{# {% if user %}{{ user.getVictoriesCount() }}{% else %}N/A{% endif %}#}
-				</p>
-				<p>Ratio de victoires:{# } {% if user %}{{ user.getVictoryRatio() }}{% else %}N/A{% endif %}#}</p>
+				<h3>Statistiques Complètes</h3>
+				<div class="statistic-item">
+					<p>Nombre de tournois participés:
+						{{ currentUserTeams|length }}</p>
+					<p>Nombre de tournois organisés :
+						{{ user.getTournamentsOrganised()|length }}</p>
+					<p>Date d'inscription:
+						{{ user.getCreatedAt()|date('Y-m-d') }}</p>
+					<p>Dernière activité:
+						{{ user.getUpdatedAt()|date('Y-m-d H:i:s') }}</p>
+				</div>
 			</div>
 
+			<!-- Onglet Historique Organisateur -->
+			<div class="tab-pane fade" id="organizer-history" role="tabpanel" aria-labelledby="organizer-history-tab">
+				<h2>Historique Organisateur</h2>
+				<ul>
+					{% for tournament in organizerTournaments %}
+						<li>
+							{{ tournament.getName() }}
+							- Début :
+							{{ tournament.getStartTime()|date('Y-m-d H:i') }}
+							{# Ajoutez d'autres détails du tournoi que vous souhaitez afficher #}
+						</li>
+						<a href="{{ path('tournament_show', {'id': tournament.getId()}) }}" class="btn btn-primary">Voir le tournoi</a>
+					{% else %}
+						<li>Aucun tournoi trouvé pour cet organisateur.</li>
+					{% endfor %}
+				</ul>
+			</div>
 			<!-- Onglet Historique des Tournois -->
 			<div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
 				<h3>Historique des Tournois</h3>
 
-				{% set tournamentsParticipated = user.getTournamentsParticipated() %}
 
-				{% if tournamentsParticipated is not empty %}
-					{% for tournament in tournamentsParticipated %}
-						<div class="tournament-card">
-							<div class="tournament-card-header">
-								<h5>{{ tournament.getName() }}</h5>
-								{% set currentTime = "now"|date('Y-m-d H:i:s') %}
-								{% set startTime = tournament.getStartTime()|date('Y-m-d H:i:s') %}
-								{% set endTime = tournament.getEndTime()|date('Y-m-d H:i:s') %}
+				{# Initialisation du compteur de tournois #}
+				{% if currentUserTeams is not empty %}
+					{% for team in currentUserTeams %}
+						{% set tournament = team.getTournament() %}
+						{% if tournament %}
+							<div class="tournament-card">
+								<div class="tournament-card-header">
+									{% set currentTime = "now"|date('Y-m-d H:i:s') %}
+									{% set startTime = tournament.getStartTime()|date('Y-m-d H:i:s') %}
+									{% set endTime = tournament.getEndTime()|date('Y-m-d H:i:s') %}
 
-								{% if currentTime >= startTime and currentTime <= endTime %}
-									<p>Statut : En cours</p>
-								{% elseif currentTime > endTime %}
-									<p>Statut : Terminé</p>
-								{% else %}
-									<p>Statut : À venir</p>
-								{% endif %}
+									<div class="tournament-status">
+										{% if currentTime >= startTime and currentTime <= endTime %}
+											<p>Statut : En cours</p>
+										{% elseif currentTime > endTime %}
+											<p>Statut : Terminé</p>
+										{% else %}
+											<p>Statut : À venir</p>
+										{% endif %}
+									</div>
+									<div class="tournament-card-body">
+										<h3>
+											Equipe :
+											{{ team.getName() }}
+										</h3>
+
+										<h6>Membres:</h6>
+										<ul>
+											{% for player in team.getEnrolledPlayers() %}
+												<li>{{ player.getUsername() }}
+												</li>
+											{% endfor %}
+										</ul>
+										<!-- Ajout du bouton Voir le tournoi -->
+										<a href="{{ path('tournament_show', {'id': tournament.getId()}) }}" class="btn btn-primary">Voir le tournoi</a>
+									</div>
+								</div>
 							</div>
-						</div>
+						{% endif %}
 					{% endfor %}
+
 				{% else %}
 					<div class="alert alert-info" role="alert">
-						Aucun tournoi trouvé dans l'historique.
-					</div>
+						Aucune équipe trouvée dans l'historique.
+					</div>x
 				{% endif %}
 			</div>
+
 		</div>
 	</div>
 
 {% endblock %}
-
 {% block stylesBrut %}
 	<style>
 		body {
