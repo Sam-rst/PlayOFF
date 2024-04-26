@@ -215,13 +215,17 @@ class Meeting
         return $this->ranking;
     }
 
-    public function addRanking(Team $ranking): static
+    public function addRanking(Team $team): static
     {
-        if (!$this->ranking->contains($ranking)) {
-            $this->ranking->add($ranking);
-            $ranking->setRankMeeting($this);
+        if (null === $this->ranking) {
+            $this->ranking = new ArrayCollection();
         }
-
+        if (!$this->ranking->contains($team)) {
+            $this->ranking->add($team);
+            if ($team->getRankMeeting() !== $this) {
+                $team->setRankMeeting($this);
+            }
+        }
         return $this;
     }
 

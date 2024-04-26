@@ -46,6 +46,7 @@ class MeetingType extends AbstractType
                 'attr' => [
                     'class' => 'form-control'
                 ],
+                'required' => false,
             ])
         ;
     }

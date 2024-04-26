@@ -4,9 +4,12 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container text-center my-3">
+	<div class="container text-center my-3" id="ranking-container" data-post-url="{{ path('meeting_update_ranking') }}" data-meeting-id="{{ meeting.id }}">
 		{{ form_start(form) }}
-		<h1 class="h3 mb-3 font-weight-normal">Modifier {{ meeting.name }} de {{ tournament.name }}
+		<h1 class="h3 mb-3 font-weight-normal">Modifier
+			{{ meeting.name }}
+			de
+			{{ tournament.name }}
 			<a class="btn btn-outline-secondary btn-sm float-end" href="{{ path('app_meeting_index') }}">Revenir</a>
 		</h1>
 
@@ -51,19 +54,24 @@
 			<table class="table text-start">
 				<thead>
 					<tr>
-						<th scope="col-10">Nom de team</th>
+						<th scope="col-10">Nom de l'équipe</th>
 						<th scope="col-2">Classement</th>
 					</tr>
 				</thead>
 				<tbody class="table-group-divider">
 					{% for team in teams %}
 						<tr>
-							<th>{{ team.name }}</th>
+							<td>{{ team.name }}</td>
 							<td>
-								<button class="btn btn-warning">Changer</button>
+								{% for rank in range(1, teams|length) %}
+									<button class="btn btn-warning btn-ranking" type="button" data-team-id="{{ team.id }}" data-rank="{{ rank }}">
+										{{ rank }}
+									</button>
+								{% endfor %}
 							</td>
 						</tr>
 					{% endfor %}
+
 				</tbody>
 			</table>
 		</div>
@@ -72,4 +80,16 @@
 		{{ form_end(form) }}
 	</div>
 
+{% endblock %}
+
+{% block styleBrut %}
+	<style>
+		.selected-ranking {
+			background-color: white;
+		}
+	</style>
+{% endblock %}
+
+{% block javascriptsBrut %}
+	<script src="{{ asset('js/edit_meeting.js') }}"></script>
 {% endblock %}

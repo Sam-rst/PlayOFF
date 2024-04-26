@@ -34,13 +34,13 @@
 	<section class="bg-light py-5 border-bottom">
 		<div class="container px-5 my-5">
 			<div class="text-center mb-5">
-				<h2 class="fw-bolder">Tournois en cours</h2>
+				<h2 class="fw-bolder">Tournois auxquels vous Participez</h2>
 			</div>
 			<div
 				class="row gx-5 justify-content-center">
-				<!-- Pricing card free-->
+				<!-- Cartes de tournois -->
 				{% if app.user %}
-					{% if tournamentsParticipated == [] %}
+					{% if tournamentsParticipated is not empty %}
 						{% for tournament in tournamentsParticipated %}
 							<div class="col-lg-6 col-xl-4">
 								<div class="card mb-5 mb-xl-0">
@@ -50,42 +50,9 @@
 											<span class="display-4 fw-bold">{{ tournament.getName() }}</span>
 											<span class="text-muted">{{ tournament.getOrganisator() }}</span>
 										</div>
-										<ul class="list-unstyled mb-4">
-											<li class="mb-2">
-												<i class="bi bi-check text-primary"></i>
-												<strong>{{ tournament.getNumberPlayers() }}</strong>
-											</li>
-											<li class="mb-2">
-												<i class="bi bi-check text-primary"></i>
-												5GB storage
-											</li>
-											<li class="mb-2">
-												<i class="bi bi-check text-primary"></i>
-												Unlimited public projects
-											</li>
-											<li class="mb-2">
-												<i class="bi bi-check text-primary"></i>
-												Community access
-											</li>
-											<li class="mb-2 text-muted">
-												<i class="bi bi-x"></i>
-												Unlimited private projects
-											</li>
-											<li class="mb-2 text-muted">
-												<i class="bi bi-x"></i>
-												Dedicated support
-											</li>
-											<li class="mb-2 text-muted">
-												<i class="bi bi-x"></i>
-												Free linked domain
-											</li>
-											<li class="text-muted">
-												<i class="bi bi-x"></i>
-												Monthly status reports
-											</li>
-										</ul>
+										<!-- Ajoute d'autres détails du tournoi si nécessaire -->
 										<div class="d-grid">
-											<a class="btn btn-outline-primary" href="#!">Choose plan</a>
+											<a class="btn btn-outline-primary" href="{{ path('tournament_show', {'id': tournament.getId()}) }}">Voir détails</a>
 										</div>
 									</div>
 								</div>
@@ -93,20 +60,53 @@
 						{% endfor %}
 					{% else %}
 						<div class="text-center">
-							<p class="lead mb-0 py-3">Vous n'avez aucun tournoi en cours.</p>
+							<p class="lead mb-0 py-3">Vous ne participez actuellement à aucun tournoi.</p>
+							<a class="btn btn-primary btn-lg px-4 me-sm-3" href="{{ path('tournament_new') }}">Je veux en rejoindre un !</a>
+						</div>
+					{% endif %}
+				{% else %}
+					<p class="lead mb-0">Connectez-vous pour voir les tournois auxquels vous participez.</p>
+				{% endif %}
+			</div>
+		</div>
+	</section>
+	<!-- Section pour afficher les tournois en cours -->
+	<section class="bg-light py-5 border-bottom">
+		<div class="container px-5 my-5">
+			<div class="text-center mb-5">
+				<h2 class="fw-bolder">Tournois Organisés en cours</h2>
+			</div>
+			<div class="row gx-5 justify-content-center">
+				{% if app.user %}
+					{% if app.user.getTournamentsOrganised()|length > 0 %}
+						{% for tournament in app.user.getTournamentsOrganised() %}
+							<div class="col-lg-6 col-xl-4">
+								<div class="card mb-5 mb-xl-0">
+									<div class="card-body p-5">
+										<div class="small text-uppercase fw-bold text-muted">{{ tournament.getSport() }}</div>
+										<div class="mb-3">
+											<span class="display-4 fw-bold">{{ tournament.getName() }}</span>
+											<br>
+											<span class="text-muted">{{ tournament.getOrganisator().getUsername() }}</span>
+										</div>
+										<!-- Affiche d'autres détails du tournoi si nécessaire -->
+										<div class="d-grid">
+											<a class="btn btn-outline-primary" href="{{ path('tournament_show', {'id': tournament.getId()}) }}">Voir détails</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+					{% else %}
+						<div class="text-center">
+							<p class="lead mb-0 py-3">Vous n'organisez actuellement aucun tournoi.</p>
 							<a class="btn btn-primary btn-lg px-4 me-sm-3" href="{{ path('tournament_new') }}">Je veux en créer un !</a>
 						</div>
 					{% endif %}
 				{% else %}
-					<p class="lead mb-0">C'est ici que vous pourrez apercevoir les tournois auquels vous participez</p>
+					<p class="lead mb-0">Connectez-vous pour voir les tournois que vous organisez.</p>
 				{% endif %}
 			</div>
 		</div>
-	</div>
-</section>
-<!-- Footer-->
-<footer class="py-5 bg-dark">
-	<div class="container px-5">
-		<p class="m-0 text-center text-white">Copyright &copy; PlayOFF 2024</p>
-	</div>
-</footer>{% endblock %}
+	</section>
+{% endblock %}
