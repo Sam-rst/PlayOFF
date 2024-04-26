@@ -17,7 +17,7 @@ class ProfileController extends AbstractController
         $user = $this->getUser();
 
         if (!$user instanceof User) {
-            throw new \RuntimeException('Utilisateur non trouvé.');
+            return $this->redirectToRoute('app_register');
         }
 
         // Récupérer les tournois organisés par l'utilisateur

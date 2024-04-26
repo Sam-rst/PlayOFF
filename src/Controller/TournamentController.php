@@ -15,6 +15,7 @@ use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,7 +52,7 @@ class TournamentController extends AbstractController
     }
 
     #[Route('/tournament/new', name: 'tournament_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, Security $security): Response
     {
         $tournament = new Tournament();
         $form = $this->createForm(TournamentType::class, $tournament);
@@ -60,8 +61,11 @@ class TournamentController extends AbstractController
 
         if ($form->isSubmitted()) {
 
-            $tournament->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris')));
+            $organisator = $security->getUser();
 
+            $tournament->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris')));
+            $tournament->setOrganisator($organisator);
+            
             $entityManager->persist($tournament);
             $entityManager->flush();
 
